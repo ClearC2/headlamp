@@ -1,0 +1,10 @@
+{
+  "path": "/companies",
+  "methods": ["GET"],
+  "title": "GET COMPANY",
+  "response": {
+    "data": {
+      "foo": "bar"
+    }
+  }
+}
