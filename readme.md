@@ -2,6 +2,10 @@
 
 Generate express api documentation automagically.
 
+## Requirements
+This issues grep commands to search code. If you would like to use the source code searching feature your system must
+have [grep](https://www.gnu.org/software/grep/manual/grep.html) installed.
+
 ## Install
 ```
 yarn add -D ClearC2/headlamp
