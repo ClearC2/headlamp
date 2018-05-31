@@ -96,7 +96,9 @@ export default function (app, options = {}) {
     const halfLines = Math.ceil(showLines / 2) - 1
     if (q.includes('"') && q.includes("'")) {
       // limitation of grep
-      return res.status({error: 'Searches cannot include both single and double quotes.'})
+      return res
+        .status(400)
+        .json({error: 'Searches cannot include both single and double quotes.'})
     }
     const escChar = q.includes("'") ? '"' : "'"
 
