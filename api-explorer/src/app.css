@@ -27,3 +27,12 @@ small {
     font-size: 76.5%;
     overflow-x: scroll !important;
 }
+
+.card-header {
+    overflow-x: auto;
+}
+.card-header::-webkit-scrollbar {
+    display: none;
+    width: 0;
+    background: transparent;
+}

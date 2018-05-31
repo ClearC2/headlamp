@@ -3562,4 +3562,13 @@ small {
     font-size: 76.5%;
     overflow-x: scroll !important;
 }
+
+.card-header {
+    overflow-x: auto;
+}
+.card-header::-webkit-scrollbar {
+    display: none;
+    width: 0;
+    background: transparent;
+}
 /*# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6IiIsImZpbGUiOiJhcHAuY3NzIiwic291cmNlUm9vdCI6IiJ9*/
