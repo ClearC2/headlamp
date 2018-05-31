@@ -111,16 +111,13 @@ export default function (app, options = {}) {
     srcDirs.forEach(dir => {
       let searchResult = ''
       try {
-        searchResult = String(execSync(`grep -rnF --include=\\*.js --include=\\*.json ${escChar}${q}${escChar} ${dir}`))
+        searchResult = execSync(`grep -rnF --include=\\*.js --include=\\*.json ${escChar}${q}${escChar} ${dir}`)
       } catch (e) {
         searchResult = ''
       }
       // convert to array, filter blanks
-      searchResult.split('\n').filter(l => !!l).forEach(result => {
-        const firstColon = nthIndex(result, ':', 1)
-        const secondColon = nthIndex(result, ':', 2)
-        const file = result.substr(0, firstColon)
-        const lineNo = Number(result.substr(firstColon + 1, secondColon - (firstColon + 1)))
+      searchResult.toString().split('\n').filter(l => !!l).forEach(result => {
+        const {file, lineNo} = parseFileAndLineNo(result)
         if (!files[file]) {
           files[file] = {file, lineNos: []}
         }
@@ -181,7 +178,7 @@ export default function (app, options = {}) {
     let srcFiles = []
     files.forEach(test => {
       const {file, lineNo} = test
-      const content = String(fs.readFileSync(file))
+      const content = fs.readFileSync(file).toString()
       const lines = content.split('\n')
       const line = lines[lineNo - 1] || ''
       const result = pattern.exec(line)
@@ -214,10 +211,20 @@ export default function (app, options = {}) {
   })
 }
 
+function parseFileAndLineNo (str) {
+  // windows filenames usually start with C:\Users
+  const colonInFilename = str.substr(0, 2).includes(':')
+  const firstColon = nthIndex(str, ':', colonInFilename ? 2 : 1)
+  const secondColon = nthIndex(str, ':', colonInFilename ? 3 : 2)
+  const file = str.substr(0, firstColon)
+  const lineNo = Number(str.substr(firstColon + 1, secondColon - (firstColon + 1)))
+  return {file, lineNo}
+}
+
 function getLastModified (file) {
   try {
     const dir = path.dirname(file)
-    return String(execSync(`cd ${dir} && git log -1 --date=iso --format=%cD ${file}`)).trim()
+    return execSync(`cd ${dir} && git log -1 --date=iso --format=%cD ${file}`).toString().trim()
   } catch (e) {
     return fs.statSync(file).mtime
   }
@@ -260,15 +267,12 @@ function findPathInSrc (options, path) {
     // execute, convert to array, filter blanks
     let searchResult = ''
     try {
-      searchResult = String(execSync(search))
+      searchResult = execSync(search).toString()
     } catch (e) {
       searchResult = ''
     }
     searchResult.split('\n').filter(l => !!l).forEach(result => {
-      const firstColon = nthIndex(result, ':', 1)
-      const secondColon = nthIndex(result, ':', 2)
-      const file = result.substr(0, firstColon)
-      const lineNo = Number(result.substr(firstColon + 1, secondColon - (firstColon + 1)))
+      const {file, lineNo} = parseFileAndLineNo(result)
       files[`${file}:${lineNo}`] = {file, lineNo}
     })
   })
@@ -286,15 +290,12 @@ function findPathInServer (options, path) {
   dirs.forEach(dir => {
     let searchResult = ''
     try {
-      searchResult = String(execSync(`grep -rn --include=\\*.js --include=\\*.json '${path}' ${dir}`))
+      searchResult = execSync(`grep -rn --include=\\*.js --include=\\*.json '${path}' ${dir}`).toString()
     } catch (e) {
       searchResult = ''
     }
     searchResult.split('\n').filter(l => !!l).forEach(result => {
-      const firstColon = nthIndex(result, ':', 1)
-      const secondColon = nthIndex(result, ':', 2)
-      const file = result.substr(0, firstColon)
-      const lineNo = Number(result.substr(firstColon + 1, secondColon - (firstColon + 1)))
+      const {file, lineNo} = parseFileAndLineNo(result)
       if (!files[file]) {
         files[file] = {file, lines: [], lastModified: getLastModified(file)}
       }

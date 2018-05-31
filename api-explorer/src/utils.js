@@ -72,5 +72,6 @@ export function displayDate (date) {
 }
 
 export function cleanFilename (file) {
-  return file.substr(0, 1) === '/' ? file.substr(1) : file
+  const firstChar = file.substr(0, 1)
+  return ['/', '\\'].includes(firstChar) ? file.substr(1) : file
 }
