@@ -88,6 +88,11 @@ export default function (app, options = {}) {
     if (!q) {
       return res.status(400).json({error: 'No search query param.'})
     }
+    // coalesce array of src dirs
+    const srcDirs = dirsToArray(options.src)
+    if (srcDirs.length === 0) {
+      return res.json({q, files: []})
+    }
     // determine how many lines of code to show
     let showLines = Number(req.query.lines)
     if (isNaN(showLines) || showLines < 10) {
@@ -101,12 +106,6 @@ export default function (app, options = {}) {
         .json({error: 'Searches cannot include both single and double quotes.'})
     }
     const escChar = q.includes("'") ? '"' : "'"
-
-    // coalesce array of src dirs
-    const srcDirs = dirsToArray(options.src)
-    if (srcDirs.length === 0) {
-      return res.json({q, files: []})
-    }
     const files = {}
     srcDirs.forEach(dir => {
       let searchResult = ''
