@@ -48,6 +48,7 @@ export default function (app, options = {}) {
     })
 
     const cleaned = routes
+      .filter(r => !['/_api', '/_docs', '/_path', '/_grep', '*'].includes(r.path))
       .map(r => {
         // attempt to find route file for route
         const routeFile = fileRoutes.find(route => {
@@ -72,7 +73,6 @@ export default function (app, options = {}) {
           payload: routeFile.payload
         }
       })
-      .filter(r => !['/_api', '/_docs', '/_path', '/_grep', '*'].includes(r.path))
 
     return res.json({
       routes: cleaned,
@@ -105,7 +105,7 @@ export default function (app, options = {}) {
     // coalesce array of src dirs
     const srcDirs = dirsToArray(options.src)
     if (srcDirs.length === 0) {
-      return []
+      return res.json({q, files: []})
     }
     const files = {}
     srcDirs.forEach(dir => {
