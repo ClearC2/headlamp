@@ -84,9 +84,12 @@ export default function (app, options = {}) {
   })
 
   app.get('/_grep', (req, res) => {
-    const {q} = req.query
-    if (!q) {
-      return res.status(400).json({error: 'No search query param.'})
+    const q = String(req.query.q).trim()
+    const minChars = 3
+    if (q.length < minChars) {
+      return res
+        .status(400)
+        .json({error: `Minimum character limit: ${minChars}.`})
     }
     // determine how many lines of code to show
     let showLines = Number(req.query.lines)
@@ -95,10 +98,9 @@ export default function (app, options = {}) {
     }
     const halfLines = Math.ceil(showLines / 2) - 1
     if (q.includes('"') && q.includes("'")) {
-      // limitation of grep
       return res
         .status(400)
-        .json({error: 'Searches cannot include both single and double quotes.'})
+        .json({error: 'Searches cannot include both single and double quotes. grep limitation.'})
     }
     const escChar = q.includes("'") ? '"' : "'"
 
@@ -110,8 +112,11 @@ export default function (app, options = {}) {
     const files = {}
     srcDirs.forEach(dir => {
       let searchResult = ''
+      const sourceJS = path.join(dir, '*.js')
+      const sourceJSON = path.join(dir, '*.json')
       try {
-        searchResult = String(execSync(`grep -rnF --include=\\*.js --include=\\*.json ${escChar}${q}${escChar} ${dir}`))
+        const cmd = `git grep -nF --untracked ${escChar}${q}${escChar} -- '${sourceJS}' '${sourceJSON}'`
+        searchResult = execSync(cmd).toString()
       } catch (e) {
         searchResult = ''
       }
@@ -217,7 +222,8 @@ export default function (app, options = {}) {
 function getLastModified (file) {
   try {
     const dir = path.dirname(file)
-    return String(execSync(`cd ${dir} && git log -1 --date=iso --format=%cD ${file}`)).trim()
+    file = path.basename(file)
+    return execSync(`cd ${dir} && git log -1 --date=iso --format=%cD ${file}`).toString().trim()
   } catch (e) {
     return fs.statSync(file).mtime
   }
@@ -231,17 +237,17 @@ function dirsToArray (dirs) {
  * Uses grep to find js/json files/lines with all non variable path parts in line
  *
  * @param options
- * @param path
+ * @param testPath
  * @returns Array
  */
-function findPathInSrc (options, path) {
+function findPathInSrc (options, testPath) {
   // coalesce array of src dirs
   const srcDirs = dirsToArray(options.src)
   if (srcDirs.length === 0) {
     return []
   }
   // get non variable path parts
-  const parts = path
+  const parts = testPath
     .split('/')
     .filter(p => {
       return !!p && !p.includes(':')
@@ -254,16 +260,18 @@ function findPathInSrc (options, path) {
   srcDirs.forEach(dir => {
     // build grep search
     const [first, ...rest] = parts
-    const partsPattern = [`grep -rn --include=\\*.js --include=\\*.json '${first}' ${dir}`]
-    rest.forEach(p => partsPattern.push(`grep '${p}'`))
+    const sourceJS = path.join(dir, '*.js')
+    const sourceJSON = path.join(dir, '*.json')
+    const partsPattern = [`git grep -n --untracked '${first}' -- '${sourceJS}' '${sourceJSON}'`]
+    rest.forEach(p => partsPattern.push(`git grep '${p}'`))
     const search = partsPattern.join(' | ')
-    // execute, convert to array, filter blanks
     let searchResult = ''
     try {
-      searchResult = String(execSync(search))
+      searchResult = execSync(search).toString()
     } catch (e) {
       searchResult = ''
     }
+    // convert to array, filter blanks
     searchResult.split('\n').filter(l => !!l).forEach(result => {
       const firstColon = nthIndex(result, ':', 1)
       const secondColon = nthIndex(result, ':', 2)
@@ -276,7 +284,7 @@ function findPathInSrc (options, path) {
   return Object.keys(files).sort().map(key => files[key])
 }
 
-function findPathInServer (options, path) {
+function findPathInServer (options, testPath) {
   // coalesce array of server dirs
   const dirs = dirsToArray(options.server)
   if (dirs.length === 0) {
@@ -286,7 +294,9 @@ function findPathInServer (options, path) {
   dirs.forEach(dir => {
     let searchResult = ''
     try {
-      searchResult = String(execSync(`grep -rn --include=\\*.js --include=\\*.json '${path}' ${dir}`))
+      const sourceJS = path.join(dir, '*.js')
+      const sourceJSON = path.join(dir, '*.json')
+      searchResult = execSync(`git grep -n --untracked '${testPath}' -- '${sourceJS}' '${sourceJSON}'`).toString()
     } catch (e) {
       searchResult = ''
     }
@@ -308,8 +318,8 @@ function findPathInServer (options, path) {
   return Object.keys(files).sort().map(key => files[key])
 }
 
-function createSrcPathRegExp (path) {
-  const parts = path.split('/')
+function createSrcPathRegExp (testPath) {
+  const parts = testPath.split('/')
   let pattern = parts
     .map((p, i) => {
       if (p.includes(':')) return '[\\s\\S]*'
