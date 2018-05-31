@@ -27,6 +27,7 @@ In your express api bootstrap file:
 import express from 'express'
 import bodyParser from 'body-parser'
 import path from 'path'
+import fs from 'fs'
 import cors from 'cors'
 import shine from 'headlamp'
 
