@@ -256,7 +256,7 @@ Or come from fixture files...
 export default {
   path: '/people',
   methods: ['GET'],
-  response: require('./_peope.json')
+  response: require('./_people.json')
 }
 ```
 
