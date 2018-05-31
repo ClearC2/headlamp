@@ -1,6 +1,6 @@
 {
   "name": "headlamp",
-  "version": "0.0.12",
+  "version": "0.0.13",
   "description": "Express API documenter",
   "main": "lib/index.js",
   "scripts": {
