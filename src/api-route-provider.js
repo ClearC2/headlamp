@@ -260,7 +260,7 @@ function getRouteResponses (options, route) {
   const routeResponses = Array.isArray(route.responses) ? route.responses : []
   const globalResponses = Array.isArray(options.responses) ? options.responses : []
   return routeResponses
-    .concat(route.globalResponses === false ? [] : globalResponses)
+    .concat(route.globalResponses === false || !route.filename ? [] : globalResponses)
     .filter(r => !!r)
     .map(r => toObject(r))
 }
