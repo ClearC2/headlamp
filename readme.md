@@ -349,7 +349,7 @@ export default {
 #### `globalResponses`
 Boolean to determine whether to concat the globally defined responses to this route. Defaults `true`.
 
-#### Response objects
+### Response objects
 Static responses must either be an object or a function that returns an object. Static response objects have the following fields:
 
 ##### `title`
@@ -364,7 +364,7 @@ The status http status code.
 ##### `response`
 The response payload.
 
-#### Response resolution
+## Response resolution
 The following priority is used to determine which response to use.
 
 - If activated response, use it
