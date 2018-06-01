@@ -53,8 +53,8 @@ export default class StaticResponses extends PureComponent {
                   <StatusBadge status={response.status} /> {response.title}
                 </Fragment>
               )}
-              option={(
-                <span className='d-block mr-2 mb-0' style={{marginTop: '.15rem'}}>
+              option={route.routeFile && (
+                <span className='mr-2 mb-0 d-block' style={{marginTop: '.15rem'}}>
                   <ActivateStaticResponse
                     active={String(this.state.respId) === String(i)}
                     route={route}

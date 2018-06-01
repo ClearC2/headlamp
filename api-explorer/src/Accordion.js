@@ -13,12 +13,16 @@ export default class Accordion extends PureComponent {
     open: false
   }
   componentDidMount () {
-    const {id} = this.props
+    const id = this.getId()
     window.$(`#collapse-${id}`).on('show.bs.collapse', () => this.setState({open: true}))
     window.$(`#collapse-${id}`).on('hidden.bs.collapse', () => this.setState({open: false}))
   }
+  getId = () => {
+    return this.props.id.replace(/\W/g, '')
+  }
   render () {
-    const {id, option} = this.props
+    const {option} = this.props
+    const id = this.getId()
     const headingId = `heading-${id}`
     const collapseId = `collapse-${id}`
     return (

@@ -46,7 +46,27 @@ shine(app, {
     path.resolve(__dirname),
     path.resolve(__dirname, '..', 'src', 'redux', 'server')
   ],
-  hidePath: path.resolve(__dirname, '..')
+  hidePath: path.resolve(__dirname, '..'),
+  responses: [
+    {
+      title: 'Invalid request',
+      status: 400,
+      response: {
+        errors: [
+          {error: 'Invalid request'}
+        ]
+      }
+    },
+    {
+      title: 'Server error',
+      status: 500,
+      response: {
+        errors: [
+          {error: 'Something went wrong.'}
+        ]
+      }
+    }
+  ]
 })
 
 const PORT = process.env.PORT || 5033
@@ -77,6 +97,10 @@ The mock server path. Can be a single path or array of paths.
 
 #### `hidePath`
 Removes the path from the file names in the api explorer.
+
+#### `responses`
+Default responses that will be associated with every route. Useful for documenting error responses. Should be an array of
+error objects. See the `responses` documentation below.
 
 ## Route files
 This package gives you a new way to define mock endpoints through route files. Route files can be nested in the `routes` directory. Example:
@@ -322,6 +346,8 @@ export default {
   ]
 }
 ```
+#### `globalResponses`
+Boolean to determine whether to concat the globally defined responses to this route. Defaults `true`.
 
 Static responses must either be an object or a function that returns an object. Static response objects have the following fields:
 

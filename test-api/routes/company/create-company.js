@@ -27,6 +27,7 @@ module.exports = {
       }
     })
   },
+  globalResponses: true,
   responses: [
     {
       title: 'All good',

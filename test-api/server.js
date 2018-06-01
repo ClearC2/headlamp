@@ -27,7 +27,29 @@ document(app, {
   server: path.resolve(__dirname, '..', 'test-api'),
   // title: 'Example API Docs',
   description: String(fs.readFileSync(path.resolve(__dirname, '..', 'readme.md'))),
-  hidePath: path.resolve(__dirname, '..')
+  hidePath: path.resolve(__dirname, '..'),
+  responses: [
+    {
+      title: 'Error',
+      description: 'Typical error',
+      status: 400,
+      response: {
+        errors: [
+          {detai: 'Something went wrong :('}
+        ]
+      }
+    },
+    () => ({
+      title: 'Critical Error',
+      description: 'Typical error',
+      status: 500,
+      response: {
+        errors: [
+          {detai: 'Something went realllly wrong >:('}
+        ]
+      }
+    })
+  ]
 })
 
 const PORT = process.env.PORT || 5033

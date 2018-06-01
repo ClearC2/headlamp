@@ -5,9 +5,9 @@ import glob from 'glob'
 import childProcess from 'child_process'
 const {execSync} = childProcess
 
-const responseStore = createActivationStore()
-
 export default function (app, options = {}) {
+  const responseStore = createActivationStore()
+
   // create routes from files
   getFileRoutes(options.routes).forEach(route => {
     // create express route
@@ -15,10 +15,10 @@ export default function (app, options = {}) {
     // add methods to route
     route.methods.forEach(method => {
       appRoute[method]((req, res) => {
-        const responses = Array.isArray(route.responses) ? route.responses : []
+        const responses = getRouteResponses(options, route)
         const respId = responseStore.getActivatedResponseId(route.id)
         if (respId !== undefined) {
-          let resp = route.responses[respId]
+          let resp = responses[respId]
           const response = toObject(resp)
           if (response) {
             return res
@@ -62,7 +62,8 @@ export default function (app, options = {}) {
           params: routeFile.params,
           filename: routeFile.filename,
           lastModified: routeFile.lastModified,
-          payload: routeFile.payload
+          payload: routeFile.payload,
+          routeFile: Object.keys(routeFile).length > 0
         }
       })
 
@@ -196,9 +197,7 @@ export default function (app, options = {}) {
   app.get('/_route/:routeId/responses', (req, res) => {
     const routeId = req.params.routeId
     const fileRoute = getFileRoutes(options.routes).find(r => r.id === routeId) || {}
-    const responses = (fileRoute.responses || []).map(response => {
-      return typeof response === 'function' ? response() : response
-    })
+    const responses = getRouteResponses(options, fileRoute)
     const responseId = responseStore.getActivatedResponseId(fileRoute.id)
     return res.json({
       respId: responseId || fileRoute.response ? null : 0,
@@ -209,7 +208,8 @@ export default function (app, options = {}) {
   app.get('/_route/:routeId/responses/:respId/activate', (req, res) => {
     const {routeId, respId} = req.params
     const fileRoute = getFileRoutes(options.routes).find(r => r.id === routeId)
-    if (fileRoute && fileRoute.responses[respId]) {
+    const responses = getRouteResponses(options, fileRoute)
+    if (fileRoute && responses[respId]) {
       responseStore.setActiveResponse(routeId, respId)
     }
     return res.json({
@@ -254,6 +254,15 @@ function createActivationStore () {
       }
     }
   }
+}
+
+function getRouteResponses (options, route) {
+  const routeResponses = Array.isArray(route.responses) ? route.responses : []
+  const globalResponses = Array.isArray(options.responses) ? options.responses : []
+  return routeResponses
+    .concat(route.globalResponses === false ? [] : globalResponses)
+    .filter(r => !!r)
+    .map(r => toObject(r))
 }
 
 function toObject (subject) {
