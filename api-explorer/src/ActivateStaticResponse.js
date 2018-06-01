@@ -25,7 +25,7 @@ export default class ActivateStaticResponse extends PureComponent {
     if (this.state.loading) return
     this.setState({loading: true})
     const {route, respId} = this.props
-    axios.get(`${config.api}/_activate-response/${route.id}/${respId}`).then(res => {
+    axios.get(`${config.api}/_route/${route.id}/responses/${respId}/activate`).then(res => {
       this.setState({loading: false})
       this.props.onActivate(res.data.respId)
     })
@@ -35,7 +35,7 @@ export default class ActivateStaticResponse extends PureComponent {
     if (this.state.loading) return
     this.setState({loading: true})
     const {route} = this.props
-    axios.get(`${config.api}/_deactivate-response/${route.id}`).then(res => {
+    axios.get(`${config.api}/_route/${route.id}/responses/deactivate`).then(res => {
       this.setState({loading: false})
       this.props.onActivate(res.data.respId)
     })

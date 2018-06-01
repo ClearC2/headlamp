@@ -25,6 +25,7 @@ module.exports = {
   responses: [
     {
       title: 'All good',
+      description,
       status: 200,
       response: {
         foo: 'bar'

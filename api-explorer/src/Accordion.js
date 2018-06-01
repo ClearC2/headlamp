@@ -18,7 +18,7 @@ export default class Accordion extends PureComponent {
     window.$(`#collapse-${id}`).on('hidden.bs.collapse', () => this.setState({open: false}))
   }
   render () {
-    const {id, headerProps} = this.props
+    const {id, option} = this.props
     const headingId = `heading-${id}`
     const collapseId = `collapse-${id}`
     return (
@@ -27,10 +27,9 @@ export default class Accordion extends PureComponent {
           className='card-header'
           id={headingId}
           style={{padding: '0rem'}}
-          {...headerProps}
         >
           <div className='row'>
-            <div className='col-10'>
+            <div className={option ? 'col-10' : 'col'}>
               <span className='mb-0'>
                 <button
                   className='btn btn-link'
@@ -44,14 +43,16 @@ export default class Accordion extends PureComponent {
                 </button>
               </span>
             </div>
-            <div className='col-2 text-right'>
-              {this.props.option}
-            </div>
+            {option && (
+              <div className='col-2 text-right'>
+                {this.props.option}
+              </div>
+            )}
           </div>
         </div>
 
         <div id={collapseId} className='collapse' aria-labelledby={headingId}>
-          <div className='card-body pl-4 border-bottom' style={{overflowX: 'scroll'}}>
+          <div className='card-body px-4 border-bottom' style={{overflowX: 'scroll'}}>
             {this.state.open && this.props.children}
           </div>
         </div>

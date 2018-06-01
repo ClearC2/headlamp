@@ -5,13 +5,7 @@ import glob from 'glob'
 import childProcess from 'child_process'
 const {execSync} = childProcess
 
-const respCache = {}
-function getRespCache () {
-  return respCache
-}
-function setRespCache (id, respId) {
-  respCache[id] = respId
-}
+const responseStore = createActivationStore()
 
 export default function (app, options = {}) {
   // create routes from files
@@ -22,7 +16,7 @@ export default function (app, options = {}) {
     route.methods.forEach(method => {
       appRoute[method]((req, res) => {
         const responses = Array.isArray(route.responses) ? route.responses : []
-        const respId = getRespCache()[route.id]
+        const respId = responseStore.getActivatedResponseId(route.id)
         if (respId !== undefined) {
           let resp = route.responses[respId]
           const response = toObject(resp)
@@ -199,23 +193,24 @@ export default function (app, options = {}) {
     })
   })
 
-  app.get('/_responses/:id', (req, res) => {
-    const id = req.params.id
-    const fileRoute = getFileRoutes(options.routes).find(r => r.id === id) || {}
+  app.get('/_route/:routeId/responses', (req, res) => {
+    const routeId = req.params.routeId
+    const fileRoute = getFileRoutes(options.routes).find(r => r.id === routeId) || {}
     const responses = (fileRoute.responses || []).map(response => {
       return typeof response === 'function' ? response() : response
     })
+    const responseId = responseStore.getActivatedResponseId(fileRoute.id)
     return res.json({
-      respId: getRespCache()[fileRoute.id] || fileRoute.response ? null : 0,
+      respId: responseId || fileRoute.response ? null : 0,
       responses
     })
   })
 
-  app.get('/_activate-response/:routeId/:respId', (req, res) => {
+  app.get('/_route/:routeId/responses/:respId/activate', (req, res) => {
     const {routeId, respId} = req.params
     const fileRoute = getFileRoutes(options.routes).find(r => r.id === routeId)
     if (fileRoute && fileRoute.responses[respId]) {
-      setRespCache(routeId, respId)
+      responseStore.setActiveResponse(routeId, respId)
     }
     return res.json({
       route: fileRoute,
@@ -223,11 +218,11 @@ export default function (app, options = {}) {
     })
   })
 
-  app.get('/_deactivate-response/:routeId', (req, res) => {
+  app.get('/_route/:routeId/responses/deactivate', (req, res) => {
     const {routeId} = req.params
     const fileRoute = getFileRoutes(options.routes).find(r => r.id === routeId)
     if (fileRoute) {
-      setRespCache(routeId, null)
+      responseStore.setActiveResponse(routeId, null)
     }
     return res.json({
       route: fileRoute,
@@ -242,6 +237,23 @@ export default function (app, options = {}) {
   app.get('*', function (req, res) {
     res.sendFile(path.resolve(__dirname, '..', 'api-explorer-dist', 'index.html'))
   })
+}
+
+// holds routeId/responseId key/value pairs
+function createActivationStore () {
+  const store = {}
+  return {
+    getActivatedResponseId (routeId) {
+      return store[routeId]
+    },
+    setActiveResponse (routeId, responseId) {
+      if (responseId === null || responseId === undefined) {
+        delete store[routeId]
+      } else {
+        store[routeId] = responseId
+      }
+    }
+  }
 }
 
 function toObject (subject) {

@@ -194,7 +194,7 @@ export default {
 }
 ```
 
-#### payload
+#### `payload`
 `POST`, `PUT`, and `PATCH` methods allow for example payloads. These payloads will populate the payload input in the api explorer.
 ```js
 export default {
@@ -234,7 +234,7 @@ export default {
 }
 ```
 
-#### response
+#### `response`
 Responses can be simple javascript objects...
 ```js
 export default {
@@ -287,6 +287,55 @@ export default {
   }
 }
 ```
+
+Unless a function is provided, a 200 status code will be sent.
+
+#### `responses`
+Instead of, or in conjunction with the `response` key, you can provide static responses.
+```js
+export default {
+  path: '/people',
+  method: 'POST',
+  responses: [
+    {
+      title: 'All good',
+      description: 'Some **markdown** describing this response',
+      status: 200,
+      response: {
+        foo: 'bar'
+      }
+    },
+    () => ({
+      title: 'Unauthorized',
+      status: 401,
+      response: require('./_dummy')
+    }),
+    {
+      title: 'No bueno',
+      status: 500,
+      response: {
+        errors: [
+          {error: 'Something went wrong :('}
+        ]
+      }
+    }
+  ]
+}
+```
+
+Static responses must either be an object or a function that returns an object. Static response objects have the following fields:
+
+##### `title`
+The title of the static response.
+
+##### `description`
+The description of the static response. Supports markdown.
+
+##### `status`
+The status http status code.
+
+##### `response`
+The response payload.
 
 ## Fixtures
 Fixture files can be nested in the `routes` directory but their file names must be prefixed with an underscore

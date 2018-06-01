@@ -6,6 +6,7 @@ import Accordion from './Accordion'
 import SyntaxHighlighter from './SyntaxHighlighter'
 import {StatusBadge} from './Response'
 import ActivateStaticResponse from './ActivateStaticResponse'
+import Markdown from './Markdown'
 
 export default class StaticResponses extends PureComponent {
   static propTypes = {
@@ -27,7 +28,7 @@ export default class StaticResponses extends PureComponent {
   fetchData = () => {
     this.setState({loading: true})
     const {route} = this.props
-    axios.get(`${config.api}/_responses/${route.id}`).then(res => {
+    axios.get(`${config.api}/_route/${route.id}/responses`).then(res => {
       this.setState({
         loading: false,
         respId: res.data.respId,
@@ -63,9 +64,16 @@ export default class StaticResponses extends PureComponent {
                 </span>
               )}
             >
-              <SyntaxHighlighter language='json'>
-                {JSON.stringify(response.response, null, 4)}
-              </SyntaxHighlighter>
+              {response.description && (
+                <Markdown>
+                  {response.description}
+                </Markdown>
+              )}
+              <div className={response.description ? 'border p-4' : undefined}>
+                <SyntaxHighlighter language='json'>
+                  {JSON.stringify(response.response, null, 4)}
+                </SyntaxHighlighter>
+              </div>
             </Accordion>
           ))}
         </div>
