@@ -5,6 +5,11 @@ This *is* some **text**. Action can be found at \`company/actions.saveCompany()\
 test
 `
 
+
+const respDesc = `
+This *is* some **text**. ~~Blah~~ blah blah.
+`
+
 module.exports = {
   path: '/companies',
   methods: ['post'],
@@ -25,7 +30,7 @@ module.exports = {
   responses: [
     {
       title: 'All good',
-      description,
+      description: respDesc,
       status: 200,
       response: {
         foo: 'bar'

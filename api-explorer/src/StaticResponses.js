@@ -54,7 +54,7 @@ export default class StaticResponses extends PureComponent {
                 </Fragment>
               )}
               option={(
-                <span className='d-block mt-1 mr-2 mb-0'>
+                <span className='d-block mr-2 mb-0' style={{marginTop: '.15rem'}}>
                   <ActivateStaticResponse
                     active={String(this.state.respId) === String(i)}
                     route={route}
