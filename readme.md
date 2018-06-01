@@ -291,7 +291,7 @@ export default {
 Unless a function is provided, a 200 status code will be sent.
 
 #### `responses`
-Instead of, or in conjunction with the `response` key, you can provide static responses.
+Instead of, or in conjunction with, the `response` key, you can provide static responses.
 ```js
 export default {
   path: '/people',
@@ -308,7 +308,7 @@ export default {
     () => ({
       title: 'Unauthorized',
       status: 401,
-      response: require('./_dummy')
+      response: require('./_bigData') // large fixture that doesn't need to be loaded into memory right away
     }),
     {
       title: 'No bueno',
@@ -336,6 +336,14 @@ The status http status code.
 
 ##### `response`
 The response payload.
+
+#### Response resolution
+The following priority is used to determine which response to use.
+
+- If activated response, uses activated response
+- If `response` object/function exists, use it
+- Uses the first response in the `responses` if exists
+- Sends error response
 
 ## Fixtures
 Fixture files can be nested in the `routes` directory but their file names must be prefixed with an underscore
