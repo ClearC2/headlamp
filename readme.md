@@ -340,9 +340,9 @@ The response payload.
 #### Response resolution
 The following priority is used to determine which response to use.
 
-- If activated response, uses activated response
+- If activated response, use activated response
 - If `response` object/function exists, use it
-- Uses the first response in the `responses` if exists
+- If first response in `responses` exists, use it
 - Sends error response
 
 ## Fixtures
