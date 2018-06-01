@@ -100,7 +100,7 @@ Removes the path from the file names in the api explorer.
 
 #### `responses`
 Default responses that will be associated with every route. Useful for documenting error responses. Should be an array of
-error objects. These will only be applied to routes defined via route files. See the `responses` documentation below.
+response objects. These will only be applied to routes defined via route files. See the `responses` documentation below.
 
 ## Route files
 This package gives you a new way to define mock endpoints through route files. Route files can be nested in the `routes` directory. Example:
