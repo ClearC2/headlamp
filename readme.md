@@ -349,7 +349,8 @@ export default {
 ```
 
 These responses will be displayed in the api explorer. Because of that, they do not have access to the
-express `req` or `res` objects. Zero arguments are passed to functional responses.
+express `req` or `res` objects. Zero arguments are passed to functional responses. If you need to add a delay or dynamically
+generate a response based on the request, use `response`.
 
 #### `globalResponses`
 Boolean to determine whether to concat the globally defined responses to this route. Defaults `true`.
