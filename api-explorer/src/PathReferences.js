@@ -1,4 +1,4 @@
-import React, {PureComponent} from 'react'
+import React, {Fragment, PureComponent} from 'react'
 import PropTypes from 'prop-types'
 import {withRouter} from 'react-router-dom'
 import axios from 'axios'
@@ -52,16 +52,19 @@ class PathReferences extends PureComponent {
     return (
       <div>
         {srcFiles.length > 0 && (
-          <div className='accordion' id='accordion'>
-            {srcFiles.map((file, i) => (
-              <SourceReference
-                key={`${uid}-${i}`}
-                id={`${uid}-${i}`}
-                reference={file}
-                hidePath={hidePath}
-              />
-            ))}
-          </div>
+          <Fragment>
+            <h6>References</h6>
+            <div className='accordion' id='accordion'>
+              {srcFiles.map((file, i) => (
+                <SourceReference
+                  key={`${uid}-${i}`}
+                  id={`${uid}-${i}`}
+                  reference={file}
+                  hidePath={hidePath}
+                />
+              ))}
+            </div>
+          </Fragment>
         )}
         {route.filename && (
           <div className='mt-3'>

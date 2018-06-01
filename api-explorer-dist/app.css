@@ -3561,6 +3561,7 @@ small {
 .card-body pre {
     font-size: 76.5%;
     overflow-x: scroll !important;
+    margin-bottom: 0.5rem !important;
 }
 
 .card-header {

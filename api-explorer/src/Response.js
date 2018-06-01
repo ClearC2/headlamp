@@ -2,7 +2,7 @@ import React, {Component} from 'react'
 import PropTypes from 'prop-types'
 import SyntaxHighlighter from './SyntaxHighlighter'
 
-function StatusBadge ({status}) {
+export function StatusBadge ({status}) {
   status = String(status)
   const leadingNumber = status.substr(0, 1)
   let className = 'badge-secondary'

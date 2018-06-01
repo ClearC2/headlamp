@@ -16,25 +16,34 @@ module.exports = {
     }
   },
   response: (req, res) => {
-    if (req.method === 'POST') {
-      return res.status(400).json({
-        errors: [
-          {detail: 'Something went wrong :('}
-        ]
-      })
-    }
-
-    if (req.method === 'PUT') {
-      return res.status(500).json({
-        errors: [
-          {detail: 'CRITICAL FAILURE'}
-        ]
-      })
-    }
     return res.status(200).json({
       company: {
         name: 'blah blah'
       }
     })
-  }
+  },
+  responses: [
+    {
+      title: 'All good',
+      description,
+      status: 200,
+      response: {
+        foo: 'bar'
+      }
+    },
+    () => ({
+      title: 'Unauthorized',
+      status: 401,
+      response: require('./_dummy')
+    }),
+    {
+      title: 'No bueno',
+      status: 500,
+      response: {
+        errors: [
+          {error: 'Something went wrong :('}
+        ]
+      }
+    }
+  ]
 }
