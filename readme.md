@@ -316,6 +316,7 @@ Unless a function is provided, a 200 status code will be sent.
 
 #### `responses`
 Instead of, or in conjunction with, the `response` key, you can provide static responses.
+
 ```js
 export default {
   path: '/people',
@@ -346,6 +347,10 @@ export default {
   ]
 }
 ```
+
+These responses will be displayed in the api explorer. Because of that, they do not have access to the
+express `req` or `res` objects. Zero arguments are passed to functional responses.
+
 #### `globalResponses`
 Boolean to determine whether to concat the globally defined responses to this route. Defaults `true`.
 
