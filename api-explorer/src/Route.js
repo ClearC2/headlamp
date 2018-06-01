@@ -6,6 +6,7 @@ import * as utils from './utils'
 import RequestForm from './RequestForm'
 import PathReferences from './PathReferences'
 import Markdown from './Markdown'
+import StaticResponses from './StaticResponses'
 
 class Route extends Component {
   static propTypes = {
@@ -81,8 +82,11 @@ class Route extends Component {
                   response={this.state.response}
                 />
               )}
+              <div>
+                <StaticResponses route={route} />
+              </div>
               {this.props.src && (
-                <div className='mt-5'>
+                <div className='mt-4'>
                   <PathReferences
                     route={route}
                     hidePath={this.props.hidePath}

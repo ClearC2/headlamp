@@ -5,50 +5,49 @@ import glob from 'glob'
 import childProcess from 'child_process'
 const {execSync} = childProcess
 
+const respCache = {}
+function getRespCache () {
+  return respCache
+}
+function setRespCache (id, respId) {
+  respCache[id] = respId
+}
+
 export default function (app, options = {}) {
-  const fileRoutes = []
-  if (options.routes) {
-    // find all route files
-    glob.sync(`${options.routes}/**/*.+(js|json)`).forEach(file => {
-      // ignore files that start with _ as a means to allow for fixture files
-      if (path.basename(file).substr(0, 1) === '_') return
-      const filename = file
-      const required = require(filename)
-      const route = required.default || required
-      route.filename = filename
-      const methods = route.method ? [route.method] : route.methods
-      route.methods = methods.map(method => method.toLowerCase())
-      route.lastModified = getLastModified(filename)
-      fileRoutes.push(route)
-      // create express route
-      const appRoute = app.route(route.path)
-      // add methods to route
-      route.methods.forEach(method => {
-        if (typeof route.response === 'function') {
-          appRoute[method](route.response)
-        } else {
-          appRoute[method]((req, res) => res.json(route.response))
+  // create routes from files
+  getFileRoutes(options.routes).forEach(route => {
+    // create express route
+    const appRoute = app.route(route.path)
+    // add methods to route
+    route.methods.forEach(method => {
+      appRoute[method]((req, res) => {
+        const responses = Array.isArray(route.responses) ? route.responses : []
+        const respId = getRespCache()[route.id]
+        if (respId !== undefined) {
+          let resp = route.responses[respId]
+          const response = toObject(resp)
+          if (response) {
+            return res
+              .status(response.status || 200)
+              .json(response.response)
+          }
         }
+        if (typeof route.response === 'function') {
+          return route.response(req, res)
+        } else if (typeof route.response === 'object') {
+          return res.json(route.response)
+        }
+        const firstResponse = toObject(responses[0] || {})
+        return res
+          .status(firstResponse.status || 500)
+          .json(firstResponse.response || 'No response defined.')
       })
     })
-  }
+  })
 
   app.get('/_api', (req, res) => {
-    const routes = []
-    app._router.stack.forEach((middleware) => {
-      if (middleware.route) {
-        // routes registered directly on the app
-        routes.push(middleware.route)
-      } else if (middleware.name === 'router') {
-        // router middleware
-        middleware.handle.stack.forEach((handler) => {
-          if (handler.route) routes.push(handler.route)
-        })
-      }
-    })
-
-    const cleaned = routes
-      .filter(r => !['/_api', '/_docs', '/_path', '/_grep', '*'].includes(r.path))
+    const fileRoutes = getFileRoutes(options.routes)
+    const routes = getAPIRoutes(app)
       .map(r => {
         // attempt to find route file for route
         const routeFile = fileRoutes.find(route => {
@@ -58,8 +57,7 @@ export default function (app, options = {}) {
           }).length
           return methodMatch && route.path === r.path
         }) || {}
-        const methods = Object.keys(r.methods).join('-')
-        const id = Buffer.from(`${methods}-${r.path}`).toString('base64')
+        const id = getRouteId(r)
         return {
           id,
           path: r.path,
@@ -75,7 +73,7 @@ export default function (app, options = {}) {
       })
 
     return res.json({
-      routes: cleaned,
+      routes,
       title: options.title,
       description: options.description,
       hidePath: options.hidePath,
@@ -201,6 +199,42 @@ export default function (app, options = {}) {
     })
   })
 
+  app.get('/_responses/:id', (req, res) => {
+    const id = req.params.id
+    const fileRoute = getFileRoutes(options.routes).find(r => r.id === id) || {}
+    const responses = (fileRoute.responses || []).map(response => {
+      return typeof response === 'function' ? response() : response
+    })
+    return res.json({
+      respId: getRespCache()[fileRoute.id] || fileRoute.response ? null : 0,
+      responses
+    })
+  })
+
+  app.get('/_activate-response/:routeId/:respId', (req, res) => {
+    const {routeId, respId} = req.params
+    const fileRoute = getFileRoutes(options.routes).find(r => r.id === routeId)
+    if (fileRoute && fileRoute.responses[respId]) {
+      setRespCache(routeId, respId)
+    }
+    return res.json({
+      route: fileRoute,
+      respId
+    })
+  })
+
+  app.get('/_deactivate-response/:routeId', (req, res) => {
+    const {routeId} = req.params
+    const fileRoute = getFileRoutes(options.routes).find(r => r.id === routeId)
+    if (fileRoute) {
+      setRespCache(routeId, null)
+    }
+    return res.json({
+      route: fileRoute,
+      respId: undefined
+    })
+  })
+
   // serve the api explorer
   app.use('/_docs', express.static(path.resolve(__dirname, '..', 'api-explorer-dist')))
 
@@ -208,6 +242,57 @@ export default function (app, options = {}) {
   app.get('*', function (req, res) {
     res.sendFile(path.resolve(__dirname, '..', 'api-explorer-dist', 'index.html'))
   })
+}
+
+function toObject (subject) {
+  return typeof subject === 'function' ? subject() : subject
+}
+
+function getFileRoutes (dir) {
+  if (!dir) return []
+  return glob.sync(`${dir}/**/*.+(js|json)`)
+    .filter(file => {
+      // ignore fixtures
+      return path.basename(file).substr(0, 1) !== '_'
+    })
+    .map(file => {
+      const required = require(file)
+      const route = required.default || required
+      route.filename = file
+      const methods = route.method ? [route.method] : route.methods
+      route.methods = methods.map(method => method.toLowerCase())
+      route.lastModified = getLastModified(file)
+      route.id = getRouteId(route)
+      route.responses = Array.isArray(route.responses) ? route.responses : []
+      return route
+    })
+}
+
+function getRouteId (route) {
+  const methods = Array.isArray(route.methods) ? route.methods : Object.keys(route.methods)
+  return Buffer.from(`${methods.join('-')}-${route.path}`).toString('base64')
+}
+
+function getAPIRoutes (app) {
+  const routes = []
+  app._router.stack.forEach((middleware) => {
+    if (middleware.route) {
+      // routes registered directly on the app
+      routes.push(middleware.route)
+    } else if (middleware.name === 'router') {
+      // router middleware
+      middleware.handle.stack.forEach((handler) => {
+        if (handler.route) routes.push(handler.route)
+      })
+    }
+  })
+
+  return routes
+    .filter(r => r.path.substr(0, 2) !== '/_' && r.path !== '*')
+    .map(r => {
+      r.id = getRouteId(r)
+      return r
+    })
 }
 
 function parseFileAndLineNo (str) {

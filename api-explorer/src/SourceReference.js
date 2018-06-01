@@ -46,7 +46,7 @@ export default class SourceReference extends PureComponent {
         </div>
 
         <div id={collapseId} className='collapse' aria-labelledby={headingId}>
-          <div className='card-body border-bottom' style={{overflowX: 'scroll'}}>
+          <div className='card-body pl-4 border-bottom' style={{overflowX: 'scroll'}}>
             {this.state.showCode && (
               <SyntaxHighlighter
                 language='jsx'
