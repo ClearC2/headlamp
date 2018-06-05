@@ -99,7 +99,7 @@ The mock server path. Can be a single path or array of paths.
 Removes the path from the file names in the api explorer.
 
 #### `responses`
-Default responses that will be associated with every route. Useful for documenting error responses. Should be an array of
+Default responses that will be associated with every file route. Useful for documenting error responses. Should be an array of
 response objects. These will only be applied to routes defined via route files. See the `responses` documentation below.
 
 ## Route files
