@@ -66,6 +66,8 @@ export const blah = '/companies/test'
 const test = 'test'
 export const path = `/foo/${blah}/companies/${test}`
 
+export const peoplePath = `/people/foobar`
+
 // Techs by Mgr
 name = 'fetchTechsForMgr'
 export const fetchTechsForMgrRequest = createAction(FETCH_TECHS_FOR_MGR_REQUEST, name, 'id')

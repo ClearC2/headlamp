@@ -19,7 +19,7 @@ export default function (app, options = {}) {
         const respId = responseStore.getActivatedResponseId(route.id)
         if (respId !== undefined) {
           let resp = responses[respId]
-          const response = toObject(resp)
+          const response = callIfFunc(resp)
           if (response) {
             return res
               .status(response.status || 200)
@@ -31,13 +31,16 @@ export default function (app, options = {}) {
         } else if (typeof route.response === 'object') {
           return res.json(route.response)
         }
-        const firstResponse = toObject(responses[0] || {})
+        const firstResponse = callIfFunc(responses[0] || {})
         return res
           .status(firstResponse.status || 500)
           .json(firstResponse.response || 'No response defined.')
       })
     })
   })
+
+  // after creating file routes
+  warnDuplicateRoutes(app)
 
   app.get('/_api', (req, res) => {
     const fileRoutes = getFileRoutes(options.routes)
@@ -150,6 +153,7 @@ export default function (app, options = {}) {
 
     res.json({q, files: matchedFiles})
   })
+
   app.get('/_path', (req, res) => {
     const {path} = req.query
     if (!path) {
@@ -167,14 +171,21 @@ export default function (app, options = {}) {
       return !serverDirs.some(dir => test.file.includes(dir))
     })
     const pattern = createSrcPathRegExp(path)
+    const isExact = !path.includes(':')
     let srcFiles = []
     files.forEach(test => {
       const {file, lineNo} = test
       const content = fs.readFileSync(file).toString()
       const lines = content.split('\n')
       const line = lines[lineNo - 1] || ''
-      const result = pattern.exec(line)
-      if (result && result.length > 0) {
+      let matches = false
+      if (isExact) {
+        matches = line.includes(path) && !line.includes(`${path}/`)
+      } else {
+        const result = pattern.exec(line)
+        matches = result && result.length > 0
+      }
+      if (matches) {
         const startLine = lineNo - halfLines <= 1 ? 1 : lineNo - halfLines // start halfLines lines back
         const linesCopy = [...lines]
         srcFiles.push({
@@ -221,9 +232,7 @@ export default function (app, options = {}) {
   app.get('/_route/:routeId/responses/deactivate', (req, res) => {
     const {routeId} = req.params
     const fileRoute = getFileRoutes(options.routes).find(r => r.id === routeId)
-    if (fileRoute) {
-      responseStore.setActiveResponse(routeId, null)
-    }
+    responseStore.setActiveResponse(routeId, null)
     return res.json({
       route: fileRoute,
       respId: undefined
@@ -239,7 +248,29 @@ export default function (app, options = {}) {
   })
 }
 
-// holds routeId/responseId key/value pairs
+function warnDuplicateRoutes (app) {
+  const routes = getAPIRoutes(app)
+  const checker = {}
+  routes.forEach(route => {
+    Object.keys(route.methods).forEach(method => {
+      if (route.methods[method]) {
+        const id = `${method} ${route.path}`
+        if (typeof checker[id] === 'undefined') {
+          checker[id] = 0
+        }
+        ++checker[id]
+      }
+    })
+  })
+
+  Object.keys(checker).forEach(id => {
+    if (checker[id] > 1) {
+      console.warn(`Duplicate route found: ${id}`) // eslint-disable-line
+    }
+  })
+}
+
+// holds routeId/responseId pairs
 function createActivationStore () {
   const store = {}
   return {
@@ -262,10 +293,10 @@ function getRouteResponses (options, route) {
   return routeResponses
     .concat(route.globalResponses === false || !route.filename ? [] : globalResponses)
     .filter(r => !!r)
-    .map(r => toObject(r))
+    .map(r => callIfFunc(r))
 }
 
-function toObject (subject) {
+function callIfFunc (subject) {
   return typeof subject === 'function' ? subject() : subject
 }
 
@@ -309,6 +340,7 @@ function getAPIRoutes (app) {
   })
 
   return routes
+    // ignore paths that start with /_ and the catchall
     .filter(r => r.path.substr(0, 2) !== '/_' && r.path !== '*')
     .map(r => {
       r.id = getRouteId(r)
