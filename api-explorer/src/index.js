@@ -11,7 +11,7 @@ console.log(config) // eslint-disable-line
 const appElement = document.getElementById('app-root')
 
 ReactDOM.render((
-  <Router basename={config.env === 'production' ? '/_docs/' : undefined}>
+  <Router basename={'/_docs/'}>
     <App />
   </Router>
 ), appElement)

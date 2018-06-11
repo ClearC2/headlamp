@@ -243,9 +243,7 @@ export default function (app, options = {}) {
   app.use('/_docs', express.static(path.resolve(__dirname, '..', 'api-explorer-dist')))
 
   // fallback to serve the api explorer so /_docs/request/* will work
-  app.get('*', function (req, res) {
-    res.sendFile(path.resolve(__dirname, '..', 'api-explorer-dist', 'index.html'))
-  })
+  app.use('/_docs/*', express.static(path.resolve(__dirname, '..', 'api-explorer-dist')))
 }
 
 function warnDuplicateRoutes (app) {
