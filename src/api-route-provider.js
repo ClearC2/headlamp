@@ -32,6 +32,9 @@ export default function (app, options = {}) {
           return res.json(route.response)
         }
         const firstResponse = callIfFunc(responses[0] || {})
+        if (route.filename) {
+          res.set('X-headlamp-server-file', route.filename)
+        }
         return res
           .status(firstResponse.status || 500)
           .json(firstResponse.response || 'No response defined.')
