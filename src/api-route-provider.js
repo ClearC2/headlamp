@@ -33,7 +33,7 @@ export default function (app, options = {}) {
         }
         const firstResponse = callIfFunc(responses[0] || {})
         if (route.filename) {
-          res.set('X-headlamp-server-file', route.filename)
+          res.set('X-Headlamp-Route-File', route.filename)
         }
         return res
           .status(firstResponse.status || 500)
