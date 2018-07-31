@@ -8,7 +8,7 @@ have [grep](https://www.gnu.org/software/grep/manual/grep.html) installed.
 
 ## Install
 ```
-yarn add -D ClearC2/headlamp
+yarn add -D ClearC2/headlamp#^1.0.0
 ```
 
 Create a new `routes` directory.
