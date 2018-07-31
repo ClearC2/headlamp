@@ -10,7 +10,18 @@
     "build": "npm run build-backend && npm run build-frontend",
     "build-backend": "node_modules/.bin/babel -d lib/ src/",
     "build-frontend": "cd api-explorer && cross=env NODE_ENV=production webpack --mode production",
-    "babel-node": "babel-node"
+    "babel-node": "babel-node",
+    "cm": "git-cz",
+    "semantic-release": "semantic-release"
+  },
+  "config": {
+    "commitizen": {
+      "path": "./node_modules/cz-conventional-changelog"
+    }
+  },
+  "release": {
+    "branch": "master",
+    "extends": "c2-semantic-release"
   },
   "husky": {
     "hooks": {
@@ -41,6 +52,7 @@
     "babel-preset-env": "^1.6.1",
     "babel-preset-react": "^6.24.1",
     "babel-preset-stage-0": "^6.24.1",
+    "c2-semantic-release": "ClearC2/c2-semantic-release#^1.0.0",
     "clean-webpack-plugin": "^0.1.18",
     "concurrently": "^3.5.1",
     "cors": "^2.8.4",
