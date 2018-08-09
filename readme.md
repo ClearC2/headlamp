@@ -78,7 +78,7 @@ app.listen(PORT, () => {
 After starting your mock server, you will have an api explorer at `http://localhost:<port>/_docs`.
 
 ## Configuration
-The second argument to the `documentAPI` function is a configuration object. All are optional.
+The second argument to the `shine` function is a configuration object. All are optional.
 
 #### `title`
 Turns into the header of the api explorer.
