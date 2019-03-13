@@ -229,7 +229,7 @@ export default {
 ```
 
 #### `headers`
-Headers to send to this request. Same format as `params` and `query`.
+Headers to send with this request. Same format as `params` and `query`.
 
 #### `payload`
 `POST`, `PUT`, and `PATCH` methods allow for example payloads. These payloads will populate the payload input in the api explorer.
