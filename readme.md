@@ -47,7 +47,7 @@ shine(app, {
     path.resolve(__dirname, '..', 'src', 'redux', 'server')
   ],
   hidePath: path.resolve(__dirname, '..'),
-  heades: {
+  headers: {
       Authorization: {
           value: 'foobar',
           help: 'jwt auth token'
