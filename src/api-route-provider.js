@@ -69,7 +69,8 @@ export default function (app, options = {}) {
           filename: routeFile.filename,
           lastModified: routeFile.lastModified,
           payload: routeFile.payload,
-          routeFile: Object.keys(routeFile).length > 0
+          routeFile: Object.keys(routeFile).length > 0,
+          headers: getRouteHeaders(options, routeFile)
         }
       })
 
@@ -295,6 +296,15 @@ function getRouteResponses (options, route) {
     .concat(route.globalResponses === false || !route.filename ? [] : globalResponses)
     .filter(r => !!r)
     .map(r => callIfFunc(r))
+}
+
+function getRouteHeaders (options, route) {
+  const routeHeaders = typeof route.headers === 'object' ? route.headers : {}
+  const globalHeaders = typeof options.headers === 'object' ? options.headers : {}
+  if (globalHeaders === false) {
+    return routeHeaders
+  }
+  return Object.assign({}, globalHeaders, routeHeaders)
 }
 
 function callIfFunc (subject) {

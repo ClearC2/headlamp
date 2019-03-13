@@ -14,6 +14,7 @@ export default class RequestForm extends PureComponent {
   state = {
     paramValues: {},
     queryValues: {},
+    headerValues: {},
     method: '',
     payload: ''
   }
@@ -36,12 +37,17 @@ export default class RequestForm extends PureComponent {
     utils.getQueryParams(route).forEach(param => {
       queryValues[param.name] = param.value || ''
     })
+    const headerValues = {}
+    Object.values(utils.normalizeParams(route.headers)).forEach(param => {
+      headerValues[param.name] = param.value || ''
+    })
     const method = methods[0]
     const payload = utils.getMethodPayload(route, method)
     this.setState({
       method,
       paramValues,
       queryValues,
+      headerValues,
       payload,
       sending: false
     })
@@ -81,7 +87,12 @@ export default class RequestForm extends PureComponent {
 
     this.setState({sending: true})
     this.props.setResponse(null)
-    axios[method](`${config.api}${path}`, payload).then(res => {
+    axios({
+      url: `${config.api}${path}`,
+      method,
+      data: payload,
+      headers: this.state.headerValues
+    }).then(res => {
       this.setState({sending: false})
       this.props.setResponse(res)
     })
@@ -95,10 +106,12 @@ export default class RequestForm extends PureComponent {
     const availableMethods = utils.getAvailableMethods(route)
     const params = utils.getPathParams(route)
     const query = utils.getQueryParams(route)
+    const headers = Object.values(utils.normalizeParams(route.headers))
     const {
       method,
       paramValues,
       queryValues,
+      headerValues,
       payload,
       sending
     } = this.state
@@ -156,6 +169,33 @@ export default class RequestForm extends PureComponent {
             </div>
           )}
         </div>
+        {headers.length > 0 && (
+          <div className='row'>
+            <div className='col'>
+              <h6>Headers</h6>
+              {headers.map(param => (
+                <div key={param.name} className='form-group'>
+                  <label>{param.name}</label>
+                  <input
+                    className='form-control'
+                    value={headerValues[param.name] || ''}
+                    onChange={e => {
+                      this.setState({
+                        headerValues: {
+                          ...headerValues,
+                          [param.name]: e.target.value
+                        }
+                      })
+                    }}
+                  />
+                  {param.help && (
+                    <small>{param.help}</small>
+                  )}
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
         <div className='form-group'>
           <label>Method</label>
           <select
