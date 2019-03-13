@@ -1,3 +1,10 @@
+# [1.1.0](https://github.com/ClearC2/headlamp/compare/v1.0.0...v1.1.0) (2019-03-13)
+
+
+### Features
+
+* **headers:** add headers support ([#5](https://github.com/ClearC2/headlamp/issues/5)) ([60ebde2](https://github.com/ClearC2/headlamp/commit/60ebde2))
+
 # 1.0.0 (2018-07-31)
 
 
