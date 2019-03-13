@@ -47,6 +47,13 @@ shine(app, {
     path.resolve(__dirname, '..', 'src', 'redux', 'server')
   ],
   hidePath: path.resolve(__dirname, '..'),
+  heades: {
+      Authorization: {
+          value: 'foobar',
+          help: 'jwt auth token'
+      },
+      'X-Custom-Thing': 'abc'
+  },
   responses: [
     {
       title: 'Invalid request',
@@ -97,6 +104,9 @@ The mock server path. Can be a single path or array of paths.
 
 #### `hidePath`
 Removes the path from the file names in the api explorer.
+
+#### `headers`
+Headers to send for every request. See `params` documentation below for similar formatting.
 
 #### `responses`
 Default responses that will be associated with every file route. Useful for documenting error responses. Should be an array of
@@ -217,6 +227,9 @@ export default {
   // ...
 }
 ```
+
+#### `headers`
+Headers to send to this request. Same format as `params` and `query`.
 
 #### `payload`
 `POST`, `PUT`, and `PATCH` methods allow for example payloads. These payloads will populate the payload input in the api explorer.
@@ -352,8 +365,11 @@ These responses will be displayed in the api explorer. Because of that, they do 
 express `req` or `res` objects. Zero arguments are passed to functional responses. If you need to add a delay or dynamically
 generate a response based on the request, use `response`.
 
+#### `globalHeaders`
+Boolean to determine whether to merge the globally defined `headers` to this route. Defaults `true`.
+
 #### `globalResponses`
-Boolean to determine whether to concat the globally defined responses to this route. Defaults `true`.
+Boolean to determine whether to concat the globally defined `responses` to this route. Defaults `true`.
 
 ### Response objects
 Static responses must either be an object or a function that returns an object. Static response objects have the following fields:

@@ -28,6 +28,9 @@ document(app, {
   // title: 'Example API Docs',
   description: String(fs.readFileSync(path.resolve(__dirname, '..', 'readme.md'))),
   hidePath: path.resolve(__dirname, '..'),
+  headers: {
+    authorization: 'bar'
+  },
   responses: [
     {
       title: 'Error',

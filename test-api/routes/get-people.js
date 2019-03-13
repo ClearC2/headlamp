@@ -13,6 +13,13 @@ module.exports = {
     }
   },
   methods: ['post', 'put', 'get'],
+  headers: {
+    authorization: {
+      help: 'auth help text',
+      value: 'foobar'
+    },
+    token: 'a-token-here'
+  },
   title: 'Get all people',
   payload: {
     data: {
