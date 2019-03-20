@@ -1,3 +1,10 @@
+## [1.1.1](https://github.com/ClearC2/headlamp/compare/v1.1.0...v1.1.1) (2019-03-20)
+
+
+### Bug Fixes
+
+* upgrade deps for security reasons ([bc1a997](https://github.com/ClearC2/headlamp/commit/bc1a997))
+
 # [1.1.0](https://github.com/ClearC2/headlamp/compare/v1.0.0...v1.1.0) (2019-03-13)
 
 
