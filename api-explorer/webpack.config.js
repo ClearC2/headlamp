@@ -4,7 +4,7 @@ const HtmlWebpackPlugin = require('html-webpack-plugin')
 const CleanWebpackPlugin = require('clean-webpack-plugin')
 const ExtractTextPlugin = require('extract-text-webpack-plugin')
 
-const extractSASS = new ExtractTextPlugin('[name].css')
+const extractCSS = new ExtractTextPlugin('[name].css')
 const NODE_ENV = process.env.NODE_ENV ? process.env.NODE_ENV : 'development'
 
 let config = {
@@ -29,7 +29,7 @@ let config = {
     new HtmlWebpackPlugin({
       template: path.resolve(__dirname, 'src', 'index.ejs')
     }),
-    extractSASS,
+    extractCSS,
     new webpack.DefinePlugin({
       'global.NODE_ENV': JSON.stringify(NODE_ENV)
     })
@@ -48,16 +48,9 @@ let config = {
       },
       {
         test: /\.css$/,
-        loader: extractSASS.extract({
+        loader: extractCSS.extract({
           fallback: 'style-loader',
           use: [ 'css-loader' ]
-        })
-      },
-      {
-        test: /\.scss/,
-        loader: extractSASS.extract({
-          fallback: 'style-loader',
-          use: [ 'css-loader', 'sass-loader?sourceMap' ]
         })
       },
       {
