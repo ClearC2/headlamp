@@ -63,10 +63,9 @@
     "extract-text-webpack-plugin": "^4.0.0-beta.0",
     "file-loader": "^1.1.11",
     "html-webpack-plugin": "^3.0.4",
-    "lodash": "^4.17.10",
+    "lodash": "^4.17.11",
     "markdown-it": "^8.4.1",
     "moment": "^2.22.1",
-    "node-sass": "^4.7.2",
     "nodemon": "^1.17.5",
     "open-iconic": "^1.1.1",
     "path-to-regexp": "^2.2.1",
@@ -78,13 +77,12 @@
     "react-router-dom": "^4.2.2",
     "react-spinkit": "^3.0.0",
     "react-syntax-highlighter": "^7.0.4",
-    "sass-loader": "^6.0.6",
     "style-loader": "^0.20.2",
     "url-loader": "^0.6.2",
     "url-search-params-polyfill": "^4.0.0",
     "webpack": "^4.8.3",
     "webpack-cli": "^2.1.4",
-    "webpack-dev-server": "^3.1.4"
+    "webpack-dev-server": "^3.1.11"
   },
   "peerDependencies": {
     "express": "^4.0.0"
