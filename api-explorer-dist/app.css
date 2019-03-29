@@ -3572,4 +3572,13 @@ small {
     width: 0;
     background: transparent;
 }
+
+.http-methods button:focus {
+    box-shadow: 0 0;
+}
+
+.http-methods .inactive-method {
+    opacity: .5;
+    font-weight: 100;
+}
 /*# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6IiIsImZpbGUiOiJhcHAuY3NzIiwic291cmNlUm9vdCI6IiJ9*/

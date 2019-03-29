@@ -1,3 +1,10 @@
+# [1.2.0](https://github.com/ClearC2/headlamp/compare/v1.1.2...v1.2.0) (2019-03-29)
+
+
+### Features
+
+* add ability to filter on http method ([#8](https://github.com/ClearC2/headlamp/issues/8)) ([75b6f33](https://github.com/ClearC2/headlamp/commit/75b6f33))
+
 ## [1.1.2](https://github.com/ClearC2/headlamp/compare/v1.1.1...v1.1.2) (2019-03-29)
 
 
