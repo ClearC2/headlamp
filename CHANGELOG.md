@@ -1,3 +1,10 @@
+## [1.1.2](https://github.com/ClearC2/headlamp/compare/v1.1.1...v1.1.2) (2019-03-29)
+
+
+### Bug Fixes
+
+* **api:** remove last modified ([#7](https://github.com/ClearC2/headlamp/issues/7)) ([4c11a6b](https://github.com/ClearC2/headlamp/commit/4c11a6b))
+
 ## [1.1.1](https://github.com/ClearC2/headlamp/compare/v1.1.0...v1.1.1) (2019-03-20)
 
 
