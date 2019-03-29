@@ -2,8 +2,27 @@ import React, {PureComponent} from 'react'
 import PropTypes from 'prop-types'
 import ReactPaginate from 'react-paginate'
 import {withRouter} from 'react-router-dom'
+import intersection from 'lodash/intersection'
 import Route from './Route'
 import Search from './Search'
+
+function Method ({method, onClick, active}) { // eslint-disable-line
+  const map = {
+    get: 'btn-success',
+    post: 'btn-primary',
+    put: 'btn-warning',
+    delete: 'btn-danger'
+  }
+  return (
+    <button
+      type='button'
+      className={`btn ${map[method]} flex-fill ${!active ? 'inactive-method' : ''}`}
+      onClick={() => onClick(method)}
+    >
+      {method.toUpperCase()}
+    </button>
+  )
+}
 
 class Explorer extends PureComponent {
   static propTypes = {
@@ -12,6 +31,12 @@ class Explorer extends PureComponent {
     routes: PropTypes.array,
     hidePath: PropTypes.string,
     src: PropTypes.any
+  }
+  state = {
+    get: true,
+    post: true,
+    put: true,
+    delete: true
   }
   redirect = (values = {}) => {
     const queryParams = new URLSearchParams(this.props.location.search)
@@ -25,6 +50,9 @@ class Explorer extends PureComponent {
       search: search ? `?${search}` : ''
     })
   }
+  toggleMethod = (method) => {
+    this.setState({[method]: !this.state[method]})
+  }
   render () {
     const queryParams = new URLSearchParams(this.props.location.search)
     const search = (queryParams.get('q') || '').toLowerCase()
@@ -33,7 +61,10 @@ class Explorer extends PureComponent {
     const zeroIndexPage = page - 1
 
     let routes = this.props.routes.filter(route => {
-      return route.search.includes(search)
+      const routeMethods = Object.keys(route.methods).filter(k => route.methods[k])
+      const validMethods = Object.keys(this.state).filter(k => this.state[k])
+      const hasValidMethods = intersection(routeMethods, validMethods).length > 0
+      return hasValidMethods && route.search.includes(search)
     })
     const numberPerPage = 20
     const pageCount = Math.ceil(routes.length / numberPerPage)
@@ -47,7 +78,7 @@ class Explorer extends PureComponent {
     routes = routes.slice(begin, end)
     return (
       <div>
-        <div className='mb-3'>
+        <div className='mb-2'>
           <Search
             value={search}
             onChange={(e) => {
@@ -57,6 +88,12 @@ class Explorer extends PureComponent {
               })
             }}
           />
+        </div>
+        <div className='http-methods btn-group d-flex mb-2' role='group' aria-label='Basic example'>
+          <Method method='get' onClick={this.toggleMethod} active={this.state.get} />
+          <Method method='post' onClick={this.toggleMethod} active={this.state.post} />
+          <Method method='put' onClick={this.toggleMethod} active={this.state.put} />
+          <Method method='delete' onClick={this.toggleMethod} active={this.state.delete} />
         </div>
         {routes.map((route, i) => (
           <div key={i} className={'mb-2'}>
