@@ -424,6 +424,3 @@ The above would match:
 ```
 /companies/:companyUnid/employees/:unid/address
 ```
-
-### Git dates
-Hovering over file names will show the last modified date according to git.
