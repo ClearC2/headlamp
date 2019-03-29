@@ -67,7 +67,6 @@ export default function (app, options = {}) {
           query: routeFile.query,
           params: routeFile.params,
           filename: routeFile.filename,
-          lastModified: routeFile.lastModified,
           payload: routeFile.payload,
           routeFile: Object.keys(routeFile).length > 0,
           headers: getRouteHeaders(options, routeFile)
@@ -150,8 +149,7 @@ export default function (app, options = {}) {
         return {
           ...ref,
           startLineNo,
-          lines,
-          lastModified: getLastModified(ref.file)
+          lines
         }
       })
 
@@ -194,7 +192,6 @@ export default function (app, options = {}) {
         const linesCopy = [...lines]
         srcFiles.push({
           file,
-          lastModified: getLastModified(file),
           startLineNo: startLine,
           lineNo,
           lines: linesCopy.splice(startLine - 1, showLines)
@@ -324,7 +321,6 @@ function getFileRoutes (dir) {
       route.filename = file
       const methods = route.method ? [route.method] : route.methods
       route.methods = methods.map(method => method.toLowerCase())
-      route.lastModified = getLastModified(file)
       route.id = getRouteId(route)
       route.responses = Array.isArray(route.responses) ? route.responses : []
       return route
@@ -367,15 +363,6 @@ function parseFileAndLineNo (str) {
   const file = str.substr(0, firstColon)
   const lineNo = Number(str.substr(firstColon + 1, secondColon - (firstColon + 1)))
   return {file, lineNo}
-}
-
-function getLastModified (file) {
-  try {
-    const dir = path.dirname(file)
-    return execSync(`cd ${dir} && git log -1 --date=iso --format=%cD ${file}`).toString().trim()
-  } catch (e) {
-    return fs.statSync(file).mtime
-  }
 }
 
 function dirsToArray (dirs) {
@@ -445,7 +432,7 @@ function findPathInServer (options, path) {
     searchResult.split('\n').filter(l => !!l).forEach(result => {
       const {file, lineNo} = parseFileAndLineNo(result)
       if (!files[file]) {
-        files[file] = {file, lines: [], lastModified: getLastModified(file)}
+        files[file] = {file, lines: []}
       }
       const existingLines = files[file].lines
       if (existingLines.findIndex(no => no === lineNo) === -1) {
