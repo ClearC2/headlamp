@@ -37,3 +37,12 @@ small {
     width: 0;
     background: transparent;
 }
+
+.http-methods button:focus {
+    box-shadow: 0 0;
+}
+
+.http-methods .inactive-method {
+    opacity: .5;
+    font-weight: 100;
+}
