@@ -7,6 +7,8 @@ import SyntaxHighlighter from './SyntaxHighlighter'
 import {StatusBadge} from './Response'
 import ActivateStaticResponse from './ActivateStaticResponse'
 import Markdown from './Markdown'
+import CustomResponseForm from './CustomResponseForm'
+import DeleteCustomResponse from './DeleteCustomResponse'
 
 export default class StaticResponses extends PureComponent {
   static propTypes = {
@@ -61,6 +63,13 @@ export default class StaticResponses extends PureComponent {
                     respId={i}
                     onActivate={respId => this.setState({respId})}
                   />
+                  {response.id && (
+                    <DeleteCustomResponse
+                      route={route}
+                      id={response.id}
+                      onSuccess={this.fetchData}
+                    />
+                  )}
                 </span>
               )}
             >
@@ -69,13 +78,33 @@ export default class StaticResponses extends PureComponent {
                   {response.description}
                 </Markdown>
               )}
-              <div className={response.description ? 'border p-4' : undefined}>
-                <SyntaxHighlighter language='json'>
-                  {JSON.stringify(response.response, null, 4)}
-                </SyntaxHighlighter>
-              </div>
+              {response.id ? (
+                <CustomResponseForm
+                  route={route}
+                  response={response}
+                  onSuccess={() => {
+                    window.$('#custom-link').click()
+                    this.fetchData()
+                  }}
+                />
+              ) : (
+                <div className={response.description ? 'border p-4' : undefined}>
+                  <SyntaxHighlighter language='json'>
+                    {JSON.stringify(response.response, null, 4)}
+                  </SyntaxHighlighter>
+                </div>
+              )}
             </Accordion>
           ))}
+          <Accordion id='custom' title='Add Custom'>
+            <CustomResponseForm
+              route={route}
+              onSuccess={() => {
+                window.$('#custom-link').click()
+                this.fetchData()
+              }}
+            />
+          </Accordion>
         </div>
       </div>
     )

@@ -42,6 +42,7 @@ export default class Accordion extends PureComponent {
                   data-toggle='collapse'
                   data-target={`#${collapseId}`}
                   aria-controls={collapseId}
+                  id={`${id}-link`}
                 >
                   {this.props.title}
                 </button>
