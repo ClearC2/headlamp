@@ -3,6 +3,11 @@ import PropTypes from 'prop-types'
 import axios from 'axios'
 import config from './config'
 
+const textAreaStyle = {
+  fontSize: 12,
+  fontFamily: 'Consolas, Monaco, "Andale Mono", "Ubuntu Mono", monospace'
+}
+
 class CustomResponseForm extends React.Component {
   static propTypes = {
     route: PropTypes.object.isRequired,
@@ -109,6 +114,7 @@ class CustomResponseForm extends React.Component {
             className='form-control'
             rows={10}
             value={this.state.response}
+            style={textAreaStyle}
             onChange={(e) => this.setState({response: e.target.value})}
           />
         </div>
