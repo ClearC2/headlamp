@@ -1,6 +1,6 @@
 import React, {PureComponent} from 'react'
 import PropTypes from 'prop-types'
-import axios from 'axios/index'
+import axios from 'axios'
 import config from './config'
 
 export default class ActivateStaticResponse extends PureComponent {

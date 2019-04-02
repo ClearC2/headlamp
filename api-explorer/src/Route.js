@@ -7,6 +7,8 @@ import RequestForm from './RequestForm'
 import PathReferences from './PathReferences'
 import Markdown from './Markdown'
 import StaticResponses from './StaticResponses'
+import CustomResponseForm from './CustomResponseForm'
+import Accordion from './Accordion'
 
 class Route extends Component {
   static propTypes = {

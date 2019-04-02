@@ -7,6 +7,14 @@ const {execSync} = childProcess
 
 export default function (app, options = {}) {
   const responseStore = createActivationStore()
+  const customResponseStore = createCustomResponseStore()
+
+  function getAllRouteResponses (routeId) {
+    const fileRoute = getFileRoutes(options.routes).find(r => r.id === routeId)
+    const fileResponses = getRouteResponses(options, fileRoute)
+    const customResponses = customResponseStore.getResponses(routeId)
+    return fileResponses.concat(customResponses)
+  }
 
   // create routes from files
   getFileRoutes(options.routes).forEach(route => {
@@ -15,7 +23,7 @@ export default function (app, options = {}) {
     // add methods to route
     route.methods.forEach(method => {
       appRoute[method]((req, res) => {
-        const responses = getRouteResponses(options, route)
+        const responses = getAllRouteResponses(route.id)
         const respId = responseStore.getActivatedResponseId(route.id)
         if (respId !== undefined) {
           let resp = responses[respId]
@@ -209,10 +217,10 @@ export default function (app, options = {}) {
   app.get('/_route/:routeId/responses', (req, res) => {
     const routeId = req.params.routeId
     const fileRoute = getFileRoutes(options.routes).find(r => r.id === routeId) || {}
-    const responses = getRouteResponses(options, fileRoute)
+    const responses = getAllRouteResponses(routeId)
     const responseId = responseStore.getActivatedResponseId(fileRoute.id)
     return res.json({
-      respId: responseId || fileRoute.response ? null : 0,
+      respId: responseId || (fileRoute.response ? null : 0),
       responses
     })
   })
@@ -220,7 +228,7 @@ export default function (app, options = {}) {
   app.get('/_route/:routeId/responses/:respId/activate', (req, res) => {
     const {routeId, respId} = req.params
     const fileRoute = getFileRoutes(options.routes).find(r => r.id === routeId)
-    const responses = getRouteResponses(options, fileRoute)
+    const responses = getAllRouteResponses(routeId)
     if (fileRoute && responses[respId]) {
       responseStore.setActiveResponse(routeId, respId)
     }
@@ -238,6 +246,27 @@ export default function (app, options = {}) {
       route: fileRoute,
       respId: undefined
     })
+  })
+
+  app.put('/_route/:routeId/responses', (req, res) => {
+    const routeId = req.params.routeId
+    customResponseStore.save(routeId, req.body.response)
+    const responses = getAllRouteResponses(routeId)
+    // can only add so we just get the one we just added
+    responseStore.setActiveResponse(routeId, `${responses.length - 1}`)
+    return res.json({message: 'Saved'})
+  })
+
+  app.delete('/_route/:routeId/responses/:id', (req, res) => {
+    const routeId = req.params.routeId
+    const responses = getAllRouteResponses(routeId)
+    const activeIndex = responseStore.getActivatedResponseId(routeId)
+    const deleteIndex = responses.findIndex((r) => r.id === req.params.id)
+    if (Number(activeIndex) === Number(deleteIndex)) {
+      responseStore.setActiveResponse(routeId, null)
+    }
+    customResponseStore.delete(routeId, req.params.id)
+    return res.json({message: 'Deleted'})
   })
 
   // serve the api explorer
@@ -282,6 +311,33 @@ function createActivationStore () {
       } else {
         store[routeId] = responseId
       }
+    }
+  }
+}
+
+function createCustomResponseStore () {
+  const store = {} //
+  return {
+    getResponses (routeId) {
+      return Array.isArray(store[routeId]) ? store[routeId] : []
+    },
+    save (routeId, response) {
+      response = {
+        ...response,
+        id: response.id || Buffer.from(String((new Date().getTime()))).toString('base64')
+      }
+      const routeResponses = this.getResponses(routeId)
+      const index = routeResponses.findIndex((r) => r.id === response.id)
+      const newResponses = [...routeResponses]
+      if (index > -1) {
+        newResponses[index] = response
+      } else {
+        newResponses.push(response)
+      }
+      store[routeId] = newResponses
+    },
+    delete (routeId, id) {
+      store[routeId] = this.getResponses(routeId).filter((r) => r.id !== id)
     }
   }
 }

@@ -7,6 +7,8 @@ import SyntaxHighlighter from './SyntaxHighlighter'
 import {StatusBadge} from './Response'
 import ActivateStaticResponse from './ActivateStaticResponse'
 import Markdown from './Markdown'
+import CustomResponseForm from './CustomResponseForm'
+import DeleteCustomResponse from './DeleteCustomResponse'
 
 export default class StaticResponses extends PureComponent {
   static propTypes = {
@@ -61,6 +63,13 @@ export default class StaticResponses extends PureComponent {
                     respId={i}
                     onActivate={respId => this.setState({respId})}
                   />
+                  {response.id && (
+                    <DeleteCustomResponse
+                      route={route}
+                      id={response.id}
+                      onSuccess={this.fetchData}
+                    />
+                  )}
                 </span>
               )}
             >
@@ -76,6 +85,15 @@ export default class StaticResponses extends PureComponent {
               </div>
             </Accordion>
           ))}
+          <Accordion id='custom' title='Add Custom'>
+            <CustomResponseForm
+              route={route}
+              onSuccess={() => {
+                window.$('#custom-link').click()
+                this.fetchData()
+              }}
+            />
+          </Accordion>
         </div>
       </div>
     )
