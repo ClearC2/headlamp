@@ -1,3 +1,10 @@
+# [1.3.0](https://github.com/ClearC2/headlamp/compare/v1.2.0...v1.3.0) (2019-04-02)
+
+
+### Features
+
+* add custom temporary responses ([#9](https://github.com/ClearC2/headlamp/issues/9)) ([d7b404e](https://github.com/ClearC2/headlamp/commit/d7b404e))
+
 # [1.2.0](https://github.com/ClearC2/headlamp/compare/v1.1.2...v1.2.0) (2019-03-29)
 
 
