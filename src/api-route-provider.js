@@ -250,10 +250,10 @@ export default function (app, options = {}) {
 
   app.put('/_route/:routeId/responses', (req, res) => {
     const routeId = req.params.routeId
-    customResponseStore.save(routeId, req.body.response)
+    const {id} = customResponseStore.save(routeId, req.body.response)
     const responses = getAllRouteResponses(routeId)
-    // can only add so we just get the one we just added
-    responseStore.setActiveResponse(routeId, `${responses.length - 1}`)
+    const index = responses.findIndex((r) => r.id === id)
+    responseStore.setActiveResponse(routeId, `${index > -1 ? index : ''}`)
     return res.json({message: 'Saved'})
   })
 
@@ -335,6 +335,7 @@ function createCustomResponseStore () {
         newResponses.push(response)
       }
       store[routeId] = newResponses
+      return response
     },
     delete (routeId, id) {
       store[routeId] = this.getResponses(routeId).filter((r) => r.id !== id)

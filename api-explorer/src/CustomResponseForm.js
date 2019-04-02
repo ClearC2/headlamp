@@ -6,13 +6,24 @@ import config from './config'
 class CustomResponseForm extends React.Component {
   static propTypes = {
     route: PropTypes.object.isRequired,
-    onSuccess: PropTypes.func.isRequired
+    onSuccess: PropTypes.func.isRequired,
+    response: PropTypes.object
   }
   state = {
     loading: false,
     title: '',
     status: '200',
     response: ''
+  }
+  constructor (props) {
+    super(props)
+    const {response = {}} = props
+    this.state = {
+      loading: false,
+      title: response.title || '',
+      status: `${response.status || '200'}`,
+      response: response.response ? JSON.stringify(response.response, null, 2) : ''
+    }
   }
   onSubmit = (e) => {
     e.preventDefault()
@@ -37,19 +48,28 @@ class CustomResponseForm extends React.Component {
     const {route} = this.props
     const payload = {
       response: {
+        ...this.props.response,
         title: this.state.title,
         status: Number(this.state.status),
         response: JSON.parse(this.state.response)
       }
     }
     axios.put(`${config.api}/_route/${route.id}/responses`, payload).then(res => {
-      this.setState({
-        loading: false,
-        title: '',
-        status: 200,
-        response: ''
-      })
+      const state = this.props.response
+        ? {
+          loading: false
+        }
+        : {
+          loading: false,
+          title: '',
+          status: 200,
+          response: ''
+        }
+      this.setState(state)
       this.props.onSuccess()
+      if (this.props.response) {
+        window.alert('Saved')
+      }
     })
       .catch(() => {
         this.setState({loading: false})
