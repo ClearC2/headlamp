@@ -1,5 +1,5 @@
 {
   "extends": [
-    "c2-react"
+    "@clearc2/c2-react"
   ]
 }

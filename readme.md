@@ -1,4 +1,4 @@
-# Headlamp
+# @clearc2/headlamp
 
 Generate express api documentation automagically.
 
@@ -8,7 +8,7 @@ have [grep](https://www.gnu.org/software/grep/manual/grep.html) installed.
 
 ## Install
 ```
-yarn add -D ClearC2/headlamp#^1.0.0
+yarn add -D @clearc2/headlamp
 ```
 
 Create a new `routes` directory.
@@ -29,7 +29,7 @@ import bodyParser from 'body-parser'
 import path from 'path'
 import fs from 'fs'
 import cors from 'cors'
-import shine from 'headlamp'
+import shine from '@clearc2/headlamp'
 
 const app = express()
 app.use(cors())
