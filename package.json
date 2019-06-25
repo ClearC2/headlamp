@@ -52,6 +52,7 @@
   "homepage": "https://github.com/ClearC2/headlamp#readme",
   "devDependencies": {
     "@clearc2/c2-react-config": "^3.0.3",
+    "@hot-loader/react-dom": "^16.8.6",
     "axios": "^0.19.0",
     "c2-semantic-release": "ClearC2/c2-semantic-release#^1.0.0",
     "concurrently": "^3.5.1",
@@ -76,7 +77,6 @@
     "express": "^4.0.0"
   },
   "dependencies": {
-    "@hot-loader/react-dom": "^16.8.6",
     "glob": "^7.1.2"
   }
 }
