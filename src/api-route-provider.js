@@ -343,7 +343,7 @@ function createCustomResponseStore () {
   }
 }
 
-function getRouteResponses (options, route) {
+function getRouteResponses (options, route = {}) {
   const routeResponses = Array.isArray(route.responses) ? route.responses : []
   const globalResponses = Array.isArray(options.responses) ? options.responses : []
   return routeResponses
