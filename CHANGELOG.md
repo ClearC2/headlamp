@@ -1,3 +1,10 @@
+## [2.0.3](https://github.com/ClearC2/headlamp/compare/v2.0.2...v2.0.3) (2020-02-12)
+
+
+### Bug Fixes
+
+* **deps:** make react packages not required ([#16](https://github.com/ClearC2/headlamp/issues/16)) ([17ceb69](https://github.com/ClearC2/headlamp/commit/17ceb69d78235ac4a771df590fc1576853dce9e1))
+
 ## [2.0.2](https://github.com/ClearC2/headlamp/compare/v2.0.1...v2.0.2) (2019-07-05)
 
 
