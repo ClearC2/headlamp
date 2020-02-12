@@ -11,15 +11,15 @@ const presets = [
       useBuiltIns: 'entry'
     }
   ],
-  require.resolve('@babel/preset-react')
-]
+  BABEL_MODULES === 'cjs' ? null : require.resolve('@babel/preset-react')
+].filter(Boolean)
 
 const plugins = [
   require.resolve('@babel/plugin-proposal-class-properties'),
   require.resolve('@babel/plugin-proposal-object-rest-spread'),
   require.resolve('@babel/plugin-syntax-dynamic-import'),
-  require.resolve('react-hot-loader/babel')
-]
+  BABEL_MODULES === 'cjs' ? null : require.resolve('react-hot-loader/babel')
+].filter(Boolean)
 
 const ignore = []
 
