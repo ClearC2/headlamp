@@ -1,3 +1,10 @@
+## [2.1.1](https://github.com/ClearC2/headlamp/compare/v2.1.0...v2.1.1) (2020-11-24)
+
+
+### Bug Fixes
+
+* **api:** fix host in route link header ([0cf8940](https://github.com/ClearC2/headlamp/commit/0cf89404071444944c87107e024bf0f6cc792f69))
+
 # [2.1.0](https://github.com/ClearC2/headlamp/compare/v2.0.3...v2.1.0) (2020-11-24)
 
 
