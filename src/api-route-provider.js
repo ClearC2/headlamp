@@ -25,8 +25,12 @@ export default function (app, options = {}) {
       appRoute[method]((req, res) => {
         const responses = getAllRouteResponses(route.id)
         const respId = responseStore.getActivatedResponseId(route.id)
+        if (route.filename) {
+          res.set('X-Headlamp-Route-File', route.filename)
+        }
+        res.set('X-Headlamp-Route-Link', `${req.headers.origin}/_docs/request/${route.id}`)
         if (respId !== undefined) {
-          let resp = responses[respId]
+          const resp = responses[respId]
           const response = callIfFunc(resp)
           if (response) {
             return res
@@ -40,9 +44,6 @@ export default function (app, options = {}) {
           return res.json(route.response)
         }
         const firstResponse = callIfFunc(responses[0] || {})
-        if (route.filename) {
-          res.set('X-Headlamp-Route-File', route.filename)
-        }
         return res
           .status(firstResponse.status || 500)
           .json(firstResponse.response || 'No response defined.')
@@ -182,7 +183,7 @@ export default function (app, options = {}) {
     })
     const pattern = createSrcPathRegExp(path)
     const isExact = !path.includes(':')
-    let srcFiles = []
+    const srcFiles = []
     files.forEach(test => {
       const {file, lineNo} = test
       const content = fs.readFileSync(file).toString()
