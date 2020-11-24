@@ -28,7 +28,7 @@ export default function (app, options = {}) {
         if (route.filename) {
           res.set('X-Headlamp-Route-File', route.filename)
         }
-        res.set('X-Headlamp-Route-Link', `${req.headers.origin}/_docs/request/${route.id}`)
+        res.set('X-Headlamp-Route-Link', `http://${req.headers.host}/_docs/request/${route.id}`)
         if (respId !== undefined) {
           const resp = responses[respId]
           const response = callIfFunc(resp)
