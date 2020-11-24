@@ -1,3 +1,10 @@
+# [2.1.0](https://github.com/ClearC2/headlamp/compare/v2.0.3...v2.1.0) (2020-11-24)
+
+
+### Features
+
+* **api:** add route link to headers in api responses ([804ef56](https://github.com/ClearC2/headlamp/commit/804ef564be9e292262a82ce273ca282825f846dd))
+
 ## [2.0.3](https://github.com/ClearC2/headlamp/compare/v2.0.2...v2.0.3) (2020-02-12)
 
 
