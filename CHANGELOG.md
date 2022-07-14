@@ -1,3 +1,10 @@
+# [2.2.0](https://github.com/ClearC2/headlamp/compare/v2.1.1...v2.2.0) (2022-07-14)
+
+
+### Features
+
+* add har support ([f1bee8c](https://github.com/ClearC2/headlamp/commit/f1bee8c0557bef15ba36a2124a68b7c67b32be0b))
+
 ## [2.1.1](https://github.com/ClearC2/headlamp/compare/v2.1.0...v2.1.1) (2020-11-24)
 
 
