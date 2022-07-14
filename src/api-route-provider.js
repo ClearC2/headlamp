@@ -6,6 +6,37 @@ import childProcess from 'child_process'
 const {execSync} = childProcess
 
 export default function (app, options = {}) {
+  // HAR support
+  let har = null
+  // to keep track of the sequence of requests
+  let harState = {}
+
+  app.use((req, res, next) => {
+    const harRoutes = har?.requests || []
+    const incomingPath = har?.matchQuery ? req.originalUrl : req.path
+    const matchingRequests = harRoutes.filter(r => {
+      let compareUrl = r.path
+      if (har?.matchQuery) {
+        const url = new URL(r.request.url)
+        compareUrl = `${url.pathname}${url.search}`
+      }
+      return compareUrl === incomingPath && r.method === req.method
+    })
+    harState[incomingPath] = harState[incomingPath] || 0
+    const requestIndex = harState[incomingPath]
+    const matchingRequest = matchingRequests[requestIndex]
+    if (matchingRequest) {
+      // increase the sequence to be ready for the next request
+      ++harState[incomingPath]
+      res.set('X-Headlamp-HAR-response-sequence', requestIndex + 1)
+      res.set('X-Headlamp-HAR-matching-responses', matchingRequests.length)
+      return res
+        .status(matchingRequest.response.status)
+        .json(matchingRequest.json)
+    }
+    next()
+  })
+
   const responseStore = createActivationStore()
   const customResponseStore = createCustomResponseStore()
 
@@ -87,7 +118,8 @@ export default function (app, options = {}) {
       title: options.title,
       description: options.description,
       hidePath: options.hidePath,
-      src: options.src
+      src: options.src,
+      har
     })
   })
 
@@ -268,6 +300,22 @@ export default function (app, options = {}) {
     }
     customResponseStore.delete(routeId, req.params.id)
     return res.json({message: 'Deleted'})
+  })
+
+  app.post('/_har', (req, res) => {
+    har = req.body.har
+    harState = {}
+    return res.json({message: 'Success'})
+  })
+
+  app.get('/_har', (req, res) => {
+    return res.json({har})
+  })
+
+  app.delete('/_har', (req, res) => {
+    har = null
+    harState = {}
+    return res.json({message: 'Success'})
   })
 
   // serve the api explorer
