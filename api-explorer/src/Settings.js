@@ -1,16 +1,19 @@
 import React, {PureComponent} from 'react'
 import PropTypes from 'prop-types'
 import {withRouter} from 'react-router-dom'
+import Har from './Har'
 
 class Settings extends PureComponent {
   static propTypes = {
     location: PropTypes.object,
     history: PropTypes.object
   }
+
   onSubmit = e => {
     e.preventDefault()
     window.location.reload()
   }
+
   render () {
     const queryParams = new URLSearchParams(this.props.location.search)
     const lines = queryParams.get('lines')
@@ -38,6 +41,9 @@ class Settings extends PureComponent {
             Save
           </button>
         </form>
+        <div className='mt-3'>
+          <Har />
+        </div>
       </div>
     )
   }
