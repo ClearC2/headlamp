@@ -16,7 +16,7 @@ class CustomResponseForm extends React.Component {
   }
   state = {
     loading: false,
-    title: '',
+    title: 'Custom',
     status: '200',
     response: ''
   }
@@ -25,7 +25,7 @@ class CustomResponseForm extends React.Component {
     const {response = {}} = props
     this.state = {
       loading: false,
-      title: response.title || '',
+      title: response.title || 'Custom',
       status: `${response.status || '200'}`,
       response: response.response ? JSON.stringify(response.response, null, 2) : ''
     }
@@ -66,7 +66,7 @@ class CustomResponseForm extends React.Component {
         }
         : {
           loading: false,
-          title: '',
+          title: 'Custom',
           status: 200,
           response: ''
         }
