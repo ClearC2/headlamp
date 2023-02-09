@@ -1,3 +1,10 @@
+## [2.2.1](https://github.com/ClearC2/headlamp/compare/v2.2.0...v2.2.1) (2023-02-09)
+
+
+### Bug Fixes
+
+* default custom route title ([2f93ef7](https://github.com/ClearC2/headlamp/commit/2f93ef7e459a2685b56c2ecd30171f2479b2ca62))
+
 # [2.2.0](https://github.com/ClearC2/headlamp/compare/v2.1.1...v2.2.0) (2022-07-14)
 
 
