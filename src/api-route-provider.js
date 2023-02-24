@@ -439,7 +439,7 @@ function getFileRoutes (options) {
     routes = routes.concat(filesToRoutes(glob.sync(`${dir}/**/*.+(js|json)`)))
   }
   if (src && srcDir) {
-    routes = routes.concat(filesToRoutes(glob.sync(`${src}/**/${srcDir}/**/*.+(js|json)`)))
+    // routes = routes.concat(filesToRoutes(glob.sync(`${src}/**/${srcDir}/**/*.+(js|json)`)))
   }
   return routes
 }
