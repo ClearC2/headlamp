@@ -42,6 +42,7 @@ shine(app, {
   description: String(fs.readFileSync(path.resolve(__dirname, '..', 'readme.md'))),
   routes: path.resolve(__dirname, 'routes'),
   src: path.resolve(__dirname, '..', 'src'),
+  srcDir: '_headlamp',
   server: [
     path.resolve(__dirname),
     path.resolve(__dirname, '..', 'src', 'redux', 'server')
@@ -98,6 +99,9 @@ The directory to the route files. See route file documentation below.
 
 #### `src`
 The source code path. Can be a single path or array of paths.
+
+#### `srcDir`
+The name of directories _within_ your `src` where route files are located.
 
 #### `server`
 The mock server path. Can be a single path or array of paths.

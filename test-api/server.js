@@ -24,6 +24,7 @@ app.put('/companies/:unid/workorder/:id/foobar', function (req, res) {
 document(app, {
   routes: path.resolve(__dirname, 'routes'),
   src: path.resolve(__dirname, '..', 'test-src'),
+  srcDir: '_headlamp',
   server: path.resolve(__dirname, '..', 'test-api'),
   // title: 'Example API Docs',
   description: String(fs.readFileSync(path.resolve(__dirname, '..', 'readme.md'))),
