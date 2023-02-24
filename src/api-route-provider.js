@@ -416,7 +416,7 @@ function callIfFunc (subject) {
 }
 
 function getFileRoutes (options) {
-  const {dir, src, srcDir} = options
+  const {src, srcDir} = options
   let routes = []
 
   const filesToRoutes = (files) => {
@@ -435,8 +435,8 @@ function getFileRoutes (options) {
         return route
       })
   }
-  if (dir) {
-    routes = routes.concat(filesToRoutes(glob.sync(`${dir}/**/*.+(js|json)`)))
+  if (options.routes) {
+    routes = routes.concat(filesToRoutes(glob.sync(`${options.routes}/**/*.+(js|json)`)))
   }
   if (src && srcDir) {
     routes = routes.concat(filesToRoutes(glob.sync(`${src}/**/${srcDir}/**/*.+(js|json)`)))
