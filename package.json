@@ -9,7 +9,7 @@
   "scripts": {
     "start": "concurrently -k -p \"[{name}]\" -n \"Server,React\" \"npm run server\" \"npm run react\"",
     "react": "cd api-explorer && cross-env NODE_ENV=development webpack-dev-server -d --hot --env.mode development",
-    "server": "BABEL_MODULES=cjs cross-env nodemon test-api/server.js --watch src --watch test-api --exec babel-node",
+    "server": "BABEL_MODULES=cjs cross-env nodemon test-api/server.js --watch src --watch test-api --watch 'test-src/**/_headlamp/**/*' --exec babel-node",
     "build": "npm run build-backend && npm run build-frontend",
     "build-backend": "cross-env BABEL_MODULES=cjs babel -d lib/ src/",
     "build-frontend": "cd api-explorer && cross=env NODE_ENV=production webpack --env.mode production",

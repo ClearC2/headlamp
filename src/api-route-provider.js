@@ -3,6 +3,7 @@ import path from 'path'
 import express from 'express'
 import glob from 'glob'
 import childProcess from 'child_process'
+
 const {execSync} = childProcess
 
 export default function (app, options = {}) {
@@ -41,14 +42,14 @@ export default function (app, options = {}) {
   const customResponseStore = createCustomResponseStore()
 
   function getAllRouteResponses (routeId) {
-    const fileRoute = getFileRoutes(options.routes).find(r => r.id === routeId)
+    const fileRoute = getFileRoutes(options).find(r => r.id === routeId)
     const fileResponses = getRouteResponses(options, fileRoute)
     const customResponses = customResponseStore.getResponses(routeId)
     return fileResponses.concat(customResponses)
   }
 
   // create routes from files
-  getFileRoutes(options.routes).forEach(route => {
+  getFileRoutes(options).forEach(route => {
     // create express route
     const appRoute = app.route(route.path)
     // add methods to route
@@ -86,7 +87,7 @@ export default function (app, options = {}) {
   warnDuplicateRoutes(app)
 
   app.get('/_api', (req, res) => {
-    const fileRoutes = getFileRoutes(options.routes)
+    const fileRoutes = getFileRoutes(options)
     const routes = getAPIRoutes(app)
       .map(r => {
         // attempt to find route file for route
@@ -139,13 +140,13 @@ export default function (app, options = {}) {
       showLines = 10
     }
     const halfLines = Math.ceil(showLines / 2) - 1
-    if (q.includes('"') && q.includes("'")) {
+    if (q.includes('"') && q.includes('\'')) {
       // limitation of grep
       return res
         .status(400)
         .json({error: 'Searches cannot include both single and double quotes.'})
     }
-    const escChar = q.includes("'") ? '"' : "'"
+    const escChar = q.includes('\'') ? '"' : '\''
     const files = {}
     srcDirs.forEach(dir => {
       let searchResult = ''
@@ -249,7 +250,7 @@ export default function (app, options = {}) {
 
   app.get('/_route/:routeId/responses', (req, res) => {
     const routeId = req.params.routeId
-    const fileRoute = getFileRoutes(options.routes).find(r => r.id === routeId) || {}
+    const fileRoute = getFileRoutes(options).find(r => r.id === routeId) || {}
     const responses = getAllRouteResponses(routeId)
     const responseId = responseStore.getActivatedResponseId(fileRoute.id)
     return res.json({
@@ -260,7 +261,7 @@ export default function (app, options = {}) {
 
   app.get('/_route/:routeId/responses/:respId/activate', (req, res) => {
     const {routeId, respId} = req.params
-    const fileRoute = getFileRoutes(options.routes).find(r => r.id === routeId)
+    const fileRoute = getFileRoutes(options).find(r => r.id === routeId)
     const responses = getAllRouteResponses(routeId)
     if (fileRoute && responses[respId]) {
       responseStore.setActiveResponse(routeId, respId)
@@ -273,7 +274,7 @@ export default function (app, options = {}) {
 
   app.get('/_route/:routeId/responses/deactivate', (req, res) => {
     const {routeId} = req.params
-    const fileRoute = getFileRoutes(options.routes).find(r => r.id === routeId)
+    const fileRoute = getFileRoutes(options).find(r => r.id === routeId)
     responseStore.setActiveResponse(routeId, null)
     return res.json({
       route: fileRoute,
@@ -414,23 +415,33 @@ function callIfFunc (subject) {
   return typeof subject === 'function' ? subject() : subject
 }
 
-function getFileRoutes (dir) {
-  if (!dir) return []
-  return glob.sync(`${dir}/**/*.+(js|json)`)
-    .filter(file => {
+function getFileRoutes (options) {
+  const {dir, src, srcDir} = options
+  let routes = []
+
+  const filesToRoutes = (files) => {
+    return files.filter(file => {
       // ignore fixtures
       return path.basename(file).substr(0, 1) !== '_'
     })
-    .map(file => {
-      const required = require(file)
-      const route = required.default || required
-      route.filename = file
-      const methods = route.method ? [route.method] : route.methods
-      route.methods = methods.map(method => method.toLowerCase())
-      route.id = getRouteId(route)
-      route.responses = Array.isArray(route.responses) ? route.responses : []
-      return route
-    })
+      .map(file => {
+        const required = require(file)
+        const route = required.default || required
+        route.filename = file
+        const methods = route.method ? [route.method] : route.methods
+        route.methods = methods.map(method => method.toLowerCase())
+        route.id = getRouteId(route)
+        route.responses = Array.isArray(route.responses) ? route.responses : []
+        return route
+      })
+  }
+  if (dir) {
+    routes = routes.concat(filesToRoutes(glob.sync(`${dir}/**/*.+(js|json)`)))
+  }
+  if (src && srcDir) {
+    routes = routes.concat(filesToRoutes(glob.sync(`${src}/**/${srcDir}/**/*.+(js|json)`)))
+  }
+  return routes
 }
 
 function getRouteId (route) {
