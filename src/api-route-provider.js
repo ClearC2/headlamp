@@ -41,15 +41,17 @@ export default function (app, options = {}) {
   const responseStore = createActivationStore()
   const customResponseStore = createCustomResponseStore()
 
+  const fileRoutes = getFileRoutes(options)
+
   function getAllRouteResponses (routeId) {
-    const fileRoute = getFileRoutes(options).find(r => r.id === routeId)
+    const fileRoute = fileRoutes.find(r => r.id === routeId)
     const fileResponses = getRouteResponses(options, fileRoute)
     const customResponses = customResponseStore.getResponses(routeId)
     return fileResponses.concat(customResponses)
   }
 
   // create routes from files
-  getFileRoutes(options).forEach(route => {
+  fileRoutes.forEach(route => {
     // create express route
     const appRoute = app.route(route.path)
     // add methods to route
@@ -87,7 +89,6 @@ export default function (app, options = {}) {
   warnDuplicateRoutes(app)
 
   app.get('/_api', (req, res) => {
-    const fileRoutes = getFileRoutes(options)
     const routes = getAPIRoutes(app)
       .map(r => {
         // attempt to find route file for route
@@ -250,7 +251,7 @@ export default function (app, options = {}) {
 
   app.get('/_route/:routeId/responses', (req, res) => {
     const routeId = req.params.routeId
-    const fileRoute = getFileRoutes(options).find(r => r.id === routeId) || {}
+    const fileRoute = fileRoutes.find(r => r.id === routeId) || {}
     const responses = getAllRouteResponses(routeId)
     const responseId = responseStore.getActivatedResponseId(fileRoute.id)
     return res.json({
@@ -261,7 +262,7 @@ export default function (app, options = {}) {
 
   app.get('/_route/:routeId/responses/:respId/activate', (req, res) => {
     const {routeId, respId} = req.params
-    const fileRoute = getFileRoutes(options).find(r => r.id === routeId)
+    const fileRoute = fileRoutes.find(r => r.id === routeId)
     const responses = getAllRouteResponses(routeId)
     if (fileRoute && responses[respId]) {
       responseStore.setActiveResponse(routeId, respId)
@@ -274,7 +275,7 @@ export default function (app, options = {}) {
 
   app.get('/_route/:routeId/responses/deactivate', (req, res) => {
     const {routeId} = req.params
-    const fileRoute = getFileRoutes(options).find(r => r.id === routeId)
+    const fileRoute = fileRoutes.find(r => r.id === routeId)
     responseStore.setActiveResponse(routeId, null)
     return res.json({
       route: fileRoute,
