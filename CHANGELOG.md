@@ -1,3 +1,10 @@
+## [2.3.2](https://github.com/ClearC2/headlamp/compare/v2.3.1...v2.3.2) (2023-02-24)
+
+
+### Bug Fixes
+
+* make it faster ([417cedf](https://github.com/ClearC2/headlamp/commit/417cedf96adf9ac557e82aec0356c556dba49bd7))
+
 ## [2.3.1](https://github.com/ClearC2/headlamp/compare/v2.3.0...v2.3.1) (2023-02-24)
 
 
