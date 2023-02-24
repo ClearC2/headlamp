@@ -1,3 +1,10 @@
+## [2.3.1](https://github.com/ClearC2/headlamp/compare/v2.3.0...v2.3.1) (2023-02-24)
+
+
+### Bug Fixes
+
+* routes reference ([#59](https://github.com/ClearC2/headlamp/issues/59)) ([fe76ee1](https://github.com/ClearC2/headlamp/commit/fe76ee18cf93b68ec396e0d2f81c78c6b0b90848))
+
 # [2.3.0](https://github.com/ClearC2/headlamp/compare/v2.2.1...v2.3.0) (2023-02-24)
 
 
