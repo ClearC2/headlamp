@@ -1,3 +1,10 @@
+# [2.3.0](https://github.com/ClearC2/headlamp/compare/v2.2.1...v2.3.0) (2023-02-24)
+
+
+### Features
+
+* add srcDir support ([aa9690d](https://github.com/ClearC2/headlamp/commit/aa9690d38e892ab229c63a8d2804979057e5b213))
+
 ## [2.2.1](https://github.com/ClearC2/headlamp/compare/v2.2.0...v2.2.1) (2023-02-09)
 
 
