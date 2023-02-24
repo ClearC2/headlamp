@@ -416,32 +416,23 @@ function callIfFunc (subject) {
 }
 
 function getFileRoutes (options) {
-  const {dir, src, srcDir} = options
-  let routes = []
-
-  const filesToRoutes = (files) => {
-    return files.filter(file => {
+  const {dir} = options
+  if (!dir) return []
+  return glob.sync(`${dir}/**/*.+(js|json)`)
+    .filter(file => {
       // ignore fixtures
       return path.basename(file).substr(0, 1) !== '_'
     })
-      .map(file => {
-        const required = require(file)
-        const route = required.default || required
-        route.filename = file
-        const methods = route.method ? [route.method] : route.methods
-        route.methods = methods.map(method => method.toLowerCase())
-        route.id = getRouteId(route)
-        route.responses = Array.isArray(route.responses) ? route.responses : []
-        return route
-      })
-  }
-  if (dir) {
-    routes = routes.concat(filesToRoutes(glob.sync(`${dir}/**/*.+(js|json)`)))
-  }
-  if (src && srcDir) {
-    // routes = routes.concat(filesToRoutes(glob.sync(`${src}/**/${srcDir}/**/*.+(js|json)`)))
-  }
-  return filesToRoutes(glob.sync(`${dir}/**/*.+(js|json)`))
+    .map(file => {
+      const required = require(file)
+      const route = required.default || required
+      route.filename = file
+      const methods = route.method ? [route.method] : route.methods
+      route.methods = methods.map(method => method.toLowerCase())
+      route.id = getRouteId(route)
+      route.responses = Array.isArray(route.responses) ? route.responses : []
+      return route
+    })
 }
 
 function getRouteId (route) {
