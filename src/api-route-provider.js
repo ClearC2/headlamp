@@ -437,10 +437,10 @@ function getFileRoutes (options) {
       })
   }
   if (options.routes) {
-    routes = routes.concat(filesToRoutes(glob.sync(`${options.routes}/**/*.+(js|json)`)))
+    routes = routes.concat(filesToRoutes(glob.sync(`${options.routes}/**/*.+(js|json|cjs)`)))
   }
   if (src && srcDir) {
-    routes = routes.concat(filesToRoutes(glob.sync(`${src}/**/${srcDir}/**/*.+(js|json)`)))
+    routes = routes.concat(filesToRoutes(glob.sync(`${src}/**/${srcDir}/**/*.+(js|json|cjs)`)))
   }
   return routes
 }
