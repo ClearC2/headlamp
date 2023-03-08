@@ -1,3 +1,10 @@
+# [2.4.0](https://github.com/ClearC2/headlamp/compare/v2.3.2...v2.4.0) (2023-03-08)
+
+
+### Features
+
+* support cjs files ([08018b3](https://github.com/ClearC2/headlamp/commit/08018b30d9b220b7bf3644ad3d15f2229c23df25))
+
 ## [2.3.2](https://github.com/ClearC2/headlamp/compare/v2.3.1...v2.3.2) (2023-02-24)
 
 
