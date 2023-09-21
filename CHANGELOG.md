@@ -1,3 +1,10 @@
+# [2.5.0](https://github.com/ClearC2/headlamp/compare/v2.4.0...v2.5.0) (2023-09-21)
+
+
+### Features
+
+* add copy response ([b7e90b8](https://github.com/ClearC2/headlamp/commit/b7e90b838b29bca3d50dfbc220cf6c220adfb7c2))
+
 # [2.4.0](https://github.com/ClearC2/headlamp/compare/v2.3.2...v2.4.0) (2023-03-08)
 
 
