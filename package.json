@@ -8,11 +8,11 @@
   },
   "scripts": {
     "start": "concurrently -k -p \"[{name}]\" -n \"Server,React\" \"npm run server\" \"npm run react\"",
-    "react": "cd api-explorer && cross-env NODE_ENV=development webpack-dev-server -d --hot --env.mode development",
+    "react": "cd api-explorer && cross-env NODE_ENV=development webpack-dev-server --hot --env mode=development",
     "server": "BABEL_MODULES=cjs cross-env nodemon test-api/server.js --watch src --watch test-api --watch 'test-src/**/_headlamp/**/*' --exec babel-node",
     "build": "npm run build-backend && npm run build-frontend",
     "build-backend": "cross-env BABEL_MODULES=cjs babel -d lib/ src/",
-    "build-frontend": "cd api-explorer && cross=env NODE_ENV=production webpack --env.mode production",
+    "build-frontend": "cd api-explorer && cross=env NODE_ENV=production webpack --env mode=production",
     "babel-node": "babel-node",
     "cm": "git-cz",
     "semantic-release": "semantic-release"
@@ -51,7 +51,7 @@
   },
   "homepage": "https://github.com/ClearC2/headlamp#readme",
   "devDependencies": {
-    "@clearc2/c2-react-config": "^3.0.3",
+    "@clearc2/c2-react-config": "^8.0.0",
     "@hot-loader/react-dom": "^16.8.6",
     "axios": "^0.19.0",
     "c2-semantic-release": "ClearC2/c2-semantic-release#^1.0.0",
@@ -70,13 +70,13 @@
     "react-dom": "^16.2.0",
     "react-paginate": "^5.2.3",
     "react-router-dom": "^4.2.2",
-    "react-spinkit": "^3.0.0",
     "react-syntax-highlighter": "^7.0.4"
   },
   "peerDependencies": {
     "express": "^4.0.0"
   },
   "dependencies": {
-    "glob": "^7.1.2"
+    "glob": "^7.1.2",
+    "react-spinners": "^0.13.8"
   }
 }

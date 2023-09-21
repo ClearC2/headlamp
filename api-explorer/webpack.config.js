@@ -3,7 +3,7 @@ const {webpackConfig} = require('@clearc2/c2-react-config')
 
 const {presets} = webpackConfig
 
-presets.common = presets.common.concat(['alias', 'rules', 'define'])
+presets.common = presets.common.concat(['rules', 'define'])
 
 module.exports = (env) => {
   env.presetDir = path.join(__dirname, 'webpack')

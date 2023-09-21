@@ -9,6 +9,7 @@ import ActivateStaticResponse from './ActivateStaticResponse'
 import Markdown from './Markdown'
 import CustomResponseForm from './CustomResponseForm'
 import DeleteCustomResponse from './DeleteCustomResponse'
+import {useCopyToClipboard} from './copyToClipboard'
 
 export default class StaticResponses extends PureComponent {
   static propTypes = {
@@ -17,7 +18,8 @@ export default class StaticResponses extends PureComponent {
   state = {
     responses: [],
     respId: null,
-    loading: false
+    loading: false,
+    response: null
   }
   componentDidMount () {
     this.fetchData()
@@ -88,10 +90,30 @@ export default class StaticResponses extends PureComponent {
                   }}
                 />
               ) : (
+                <div className='position-relative'>
                 <div className={response.description ? 'border p-4' : undefined}>
+                  <CopyButton
+                    className="btn btn-xs position-absolute"
+                    style={{zIndex: 1, top: '.5rem', right: '.5rem'}}
+                    text={JSON.stringify(response.response, null, 4)}
+                  />
+                  <button
+                    className="btn btn-xs position-absolute"
+                    style={{zIndex: 1, top: '.5rem', right: '5rem'}}
+                    onClick={() => {
+                      window.$('#custom-link').click()
+                      setTimeout(() => {
+                        window.document.getElementById('custom-link').scrollIntoView()
+                      }, 500)
+                      this.setState({response})
+                    }}
+                  >
+                    Customize
+                  </button>
                   <SyntaxHighlighter language='json'>
                     {JSON.stringify(response.response, null, 4)}
                   </SyntaxHighlighter>
+                </div>
                 </div>
               )}
             </Accordion>
@@ -99,8 +121,10 @@ export default class StaticResponses extends PureComponent {
           <Accordion id='custom' title='Add Custom'>
             <CustomResponseForm
               route={route}
+              response={this.state.response}
               onSuccess={() => {
                 window.$('#custom-link').click()
+                this.setState({response: null})
                 this.fetchData()
               }}
             />
@@ -109,4 +133,14 @@ export default class StaticResponses extends PureComponent {
       </div>
     )
   }
+}
+
+function CopyButton({className, style, text}) {
+  const [, copyToClipboard] = useCopyToClipboard()
+  const onClick = () => {
+    copyToClipboard(text)
+  }
+  return (
+    <button className={className} style={style}onClick={onClick}>Copy</button>
+  )
 }

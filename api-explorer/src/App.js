@@ -1,6 +1,5 @@
 import React, {Component, Fragment} from 'react'
 import PropTypes from 'prop-types'
-import {hot} from 'react-hot-loader/root'
 import {Route, withRouter} from 'react-router-dom'
 import axios from 'axios'
 import Explorer from './Explorer'
@@ -174,4 +173,4 @@ class App extends Component {
   }
 }
 
-export default hot(withRouter(App))
+export default withRouter(App)

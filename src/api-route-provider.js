@@ -67,10 +67,13 @@ export default function (app, options = {}) {
           const resp = responses[respId]
           const response = callIfFunc(resp)
           if (response) {
-            return res
-              .status(response.status || 200)
-              .json(response.response)
+            setTimeout(() => {
+              res
+                .status(response.status || 200)
+                .json(response.response)
+            }, resp.delay ?? 0)
           }
+          return
         }
         if (typeof route.response === 'function') {
           return route.response(req, res)
