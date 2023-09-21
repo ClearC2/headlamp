@@ -18,7 +18,8 @@ class CustomResponseForm extends React.Component {
     loading: false,
     title: 'Custom',
     status: '200',
-    response: ''
+    response: '',
+    delay: 0
   }
   constructor (props) {
     super(props)
@@ -27,7 +28,8 @@ class CustomResponseForm extends React.Component {
       loading: false,
       title: response.title || 'Custom',
       status: `${response.status || '200'}`,
-      response: response.response ? JSON.stringify(response.response, null, 2) : ''
+      response: response.response ? JSON.stringify(response.response, null, 2) : '',
+      delay: response.delay || 0
     }
   }
   onSubmit = (e) => {
@@ -56,7 +58,8 @@ class CustomResponseForm extends React.Component {
         ...this.props.response,
         title: this.state.title,
         status: Number(this.state.status),
-        response: JSON.parse(this.state.response)
+        response: JSON.parse(this.state.response),
+        delay: Number(this.state.delay)
       }
     }
     axios.put(`${config.api}/_route/${route.id}/responses`, payload).then(res => {
@@ -116,6 +119,20 @@ class CustomResponseForm extends React.Component {
             value={this.state.response}
             style={textAreaStyle}
             onChange={(e) => this.setState({response: e.target.value})}
+          />
+        </div>
+        <div className='form-group'>
+          <label>Delay (ms)</label>
+          <input
+            type='number'
+            step={1}
+            required
+            className='form-control'
+            value={this.state.delay}
+            onChange={(e) => {
+              const delay = Number(e.target.value)
+              this.setState({delay})
+            }}
           />
         </div>
         <button

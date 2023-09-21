@@ -1,11 +1,11 @@
 import React, {PureComponent} from 'react'
 import PropTypes from 'prop-types'
 import axios from 'axios'
-import Spinner from 'react-spinkit'
 import {withRouter} from 'react-router-dom'
 import Search from './Search'
 import config from './config'
 import SourceReference from './SourceReference'
+import {ClipLoader} from 'react-spinners'
 
 class Grep extends PureComponent {
   static propTypes = {
@@ -70,7 +70,7 @@ class Grep extends PureComponent {
         </div>
         {loading && (
           <div className='text-center mt-5'>
-            <Spinner name='line-scale-pulse-out' fadeIn='quarter' />
+            <ClipLoader />
           </div>
         )}
         {!loading && searched && files.length === 0 && !error && (

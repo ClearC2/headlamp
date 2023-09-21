@@ -2,10 +2,10 @@ import React, {Fragment, PureComponent} from 'react'
 import PropTypes from 'prop-types'
 import {withRouter} from 'react-router-dom'
 import axios from 'axios'
-import Spinner from 'react-spinkit'
 import config from './config'
 import SourceReference from './SourceReference'
 import ServerReference from './ServerReference'
+import {ClipLoader} from 'react-spinners'
 
 class PathReferences extends PureComponent {
   static propTypes = {
@@ -42,7 +42,7 @@ class PathReferences extends PureComponent {
   render () {
     if (this.state.loading) {
       return (
-        <Spinner name='line-scale-pulse-out' fadeIn='quarter' />
+        <ClipLoader />
       )
     }
     const {route, hidePath} = this.props
