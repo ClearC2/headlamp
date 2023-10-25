@@ -26,10 +26,10 @@ class CustomResponseForm extends React.Component {
     const {response = {}} = props
     this.state = {
       loading: false,
-      title: response.title || 'Custom',
-      status: `${response.status || '200'}`,
-      response: response.response ? JSON.stringify(response.response, null, 2) : '',
-      delay: response.delay || 0
+      title: response?.title || 'Custom',
+      status: `${response?.status || '200'}`,
+      response: response?.response ? JSON.stringify(response.response, null, 2) : '',
+      delay: response?.delay || 0
     }
   }
   onSubmit = (e) => {
