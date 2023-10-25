@@ -1,6 +1,6 @@
 {
   "name": "@clearc2/headlamp",
-  "version": "2.5.0",
+  "version": "2.5.1",
   "description": "Express API documenter",
   "main": "lib/index.js",
   "publishConfig": {

@@ -1,3 +1,10 @@
+## [2.5.1](https://github.com/ClearC2/headlamp/compare/v2.5.0...v2.5.1) (2023-10-25)
+
+
+### Bug Fixes
+
+* **custom-response:** fix possible null ([fc24288](https://github.com/ClearC2/headlamp/commit/fc24288914114c60ad562e082cf50dea7c0a0eea))
+
 # [2.5.0](https://github.com/ClearC2/headlamp/compare/v2.4.0...v2.5.0) (2023-09-21)
 
 
